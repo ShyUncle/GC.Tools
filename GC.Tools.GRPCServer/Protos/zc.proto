@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option csharp_namespace = "GC.Tools.GRPCServer";
+
+package ZC;
+
+// The greeting service definition.
+service ZCSer {
+  // Sends a greeting
+  rpc SayHello (ZCRequest) returns (ZCReply);
+}
+
+// The request message containing the user's name.
+message ZCRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings.
+message ZCReply {
+  string message = 1;
+}
