@@ -12,6 +12,7 @@ namespace CoreApi.Controllers
     [ApiController]
     public class ElasticsearchController : ControllerBase
     {
+        [HttpGet]
         public string Index ()
         {
             var node = new Uri("http://127.0.0.1:9200");
