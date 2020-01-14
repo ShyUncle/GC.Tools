@@ -1,18 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
-using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace IdentityServer
+namespace IdentityMVC
 {
     public class Startup
     {
@@ -26,22 +25,27 @@ namespace IdentityServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
             services.AddControllers();
-            var builder = services.AddIdentityServer()
-                                  .AddInMemoryIdentityResources(Config.GetIdentityResources())
-                                  .AddInMemoryApiResources(Config.GetApis())
-                                  .AddInMemoryClients(Config.GetClients())
-                                  .AddTestUsers(TestUsers.Users)
-                .AddDeveloperSigningCredential(persistKey: false);
-            services.AddAuthentication("Bearer")
-              .AddJwtBearer("Bearer", options =>
-              {
-                  options.Authority = "http://localhost:5000";
-                  options.RequireHttpsMetadata = false;
+            JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
 
-                  options.Audience = "api1";
-              });
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = "Cookies";
+                options.DefaultChallengeScheme = "oidc";
+            })
+                .AddCookie("Cookies")
+                .AddOpenIdConnect("oidc", options =>
+                {
+                    options.Authority = "http://localhost:5000";
+                    options.RequireHttpsMetadata = false;
+
+                    options.ClientId = "mvc";
+                    options.ClientSecret = "secret";
+                    options.ResponseType = "code";
+
+                    options.SaveTokens = true;
+                })
+                ;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,20 +56,14 @@ namespace IdentityServer
                 app.UseDeveloperExceptionPage();
             }
 
-
-            //   app.UseHttpsRedirection();
-           
             app.UseRouting();
-
-            app.UseIdentityServer();
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                   name: "default",
-                   pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapDefaultControllerRoute()
+        .RequireAuthorization();
             });
         }
     }

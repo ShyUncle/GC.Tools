@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityServer.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api1/[controller]")]
     [ApiController]
     [Authorize]
     public class IdentityController : ControllerBase

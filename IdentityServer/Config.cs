@@ -1,4 +1,5 @@
-﻿using IdentityServer4.Models;
+﻿using IdentityServer4;
+using IdentityServer4.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,8 @@ namespace IdentityServer
         {
             return new IdentityResource[]
             {
-                new IdentityResources.OpenId()
+                 new IdentityResources.OpenId(),
+        new IdentityResources.Profile(),
             };
         }
 
@@ -20,7 +22,7 @@ namespace IdentityServer
         {
             return new List<ApiResource>
             {
-                new ApiResource("api", "My API")
+                new ApiResource("api1", "My API")
             };
         }
 
@@ -49,7 +51,7 @@ namespace IdentityServer
                     ClientId = "client1",
 
                     // no interactive user, use the clientid/secret for authentication
-                    AllowedGrantTypes = GrantTypes.ResourceOwnerPasswordAndClientCredentials,
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
 
                     // secret for authentication
                     ClientSecrets =
@@ -58,7 +60,29 @@ namespace IdentityServer
                     },
 
                     // scopes that client has access to
-                    AllowedScopes = { "api" }
+                    AllowedScopes = { "api1" }
+                },
+                 new Client
+                {
+                    ClientId = "mvc",
+
+                    // no interactive user, use the clientid/secret for authentication
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequireConsent=false,
+                   RequirePkce=true,
+                   RedirectUris = { "http://localhost:5002/signin-oidc" },
+                   PostLogoutRedirectUris = { "http://localhost:5002/signout-callback-oidc" },
+                    // secret for authentication
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+
+                    // scopes that client has access to
+                    AllowedScopes = {
+                         IdentityServerConstants.StandardScopes.OpenId,
+                IdentityServerConstants.StandardScopes.Profile
+                     }
                 }
             };
         }
