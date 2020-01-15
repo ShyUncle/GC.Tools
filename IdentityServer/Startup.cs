@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer4.AccessTokenValidation;
+using IdentityServer4.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,21 +28,27 @@ namespace IdentityServer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddControllers();
-            var builder = services.AddIdentityServer()
-                                  .AddInMemoryIdentityResources(Config.GetIdentityResources())
-                                  .AddInMemoryApiResources(Config.GetApis())
-                                  .AddInMemoryClients(Config.GetClients())
-                                  .AddTestUsers(TestUsers.Users)
+            //services.AddControllers();
+            var builder = services.AddIdentityServer(options =>
+                options.UserInteraction = new UserInteractionOptions()
+                {
+                    LogoutUrl = "/account/logout",
+                    LoginUrl = "/account/login",
+                    LoginReturnUrlParameter = "returnUrl"
+                })
+                .AddInMemoryIdentityResources(Config.GetIdentityResources())
+                .AddInMemoryApiResources(Config.GetApis())
+                .AddInMemoryClients(Config.GetClients())
+                .AddTestUsers(TestUsers.Users)
                 .AddDeveloperSigningCredential(persistKey: false);
-            services.AddAuthentication("Bearer")
-              .AddJwtBearer("Bearer", options =>
-              {
-                  options.Authority = "http://localhost:5000";
-                  options.RequireHttpsMetadata = false;
+            //services.AddAuthentication("Bearer")
+            //  .AddJwtBearer("Bearer", options =>
+            //  {
+            //      options.Authority = "http://localhost:5000";
+            //      options.RequireHttpsMetadata = false;
 
-                  options.Audience = "api1";
-              });
+            //      options.Audience = "api1";
+            //  });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,7 +61,7 @@ namespace IdentityServer
 
 
             //   app.UseHttpsRedirection();
-           
+
             app.UseRouting();
 
             app.UseIdentityServer();

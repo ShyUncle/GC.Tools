@@ -81,8 +81,11 @@ namespace IdentityServer
                     // scopes that client has access to
                     AllowedScopes = {
                          IdentityServerConstants.StandardScopes.OpenId,
-                IdentityServerConstants.StandardScopes.Profile
-                     }
+                IdentityServerConstants.StandardScopes.Profile,
+                "api1"
+                     },
+                    AllowOfflineAccess=true
+
                 }
             };
         }

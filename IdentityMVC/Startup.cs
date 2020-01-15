@@ -25,7 +25,7 @@ namespace IdentityMVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllersWithViews();
             JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
 
             services.AddAuthentication(options =>
@@ -42,7 +42,8 @@ namespace IdentityMVC
                     options.ClientId = "mvc";
                     options.ClientSecret = "secret";
                     options.ResponseType = "code";
-
+                    options.Scope.Add("api1");
+                    options.Scope.Add("offline_access");
                     options.SaveTokens = true;
                 })
                 ;
@@ -59,7 +60,7 @@ namespace IdentityMVC
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute()
