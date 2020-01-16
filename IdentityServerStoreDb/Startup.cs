@@ -43,7 +43,9 @@ namespace IdentityServerStoreDb
                 options.ConfigureDbContext = b => b.UseSqlServer(connectionString,
                     sql => sql.MigrationsAssembly(migrationsAssembly));
             }).AddDeveloperSigningCredential( )
-           .AddResourceOwnerValidator<ResourceOwnerPasswordValidator>() ;
+           .AddResourceOwnerValidator<ResourceOwnerPasswordValidator>()
+        
+           ;//.AddSigningCredential(null)  .AddInMemoryCaching() 
 
         }
 
@@ -58,7 +60,6 @@ namespace IdentityServerStoreDb
 
             app.UseRouting();
             app.UseIdentityServer();
-            app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
