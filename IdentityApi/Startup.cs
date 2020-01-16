@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -11,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace IdentityMVC
+namespace IdentityApi
 {
     public class Startup
     {
@@ -25,28 +24,15 @@ namespace IdentityMVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
-            JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
+            services.AddControllers();
+            services.AddAuthentication("Bearer")
+           .AddJwtBearer("Bearer", options =>
+           {
+               options.Authority = "http://localhost:5000";
+               options.RequireHttpsMetadata = false;
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = "Cookies";
-                options.DefaultChallengeScheme = "oidc";
-            })
-                .AddCookie("Cookies")
-                .AddOpenIdConnect("oidc", options =>
-                {
-                    options.Authority = "http://localhost:5000";
-                    options.RequireHttpsMetadata = false;
-
-                    options.ClientId = "mvc";
-                    options.ClientSecret = "49C1A7E1-0C79-4A89-A3D6-A37998FB86B0";
-                    options.ResponseType = "code";
-                    options.Scope.Add("api1");
-                    options.Scope.Add("offline_access");
-                    options.SaveTokens = true;
-                })
-                ;
+               options.Audience = "api1";
+           });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,11 +46,10 @@ namespace IdentityMVC
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-            
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapDefaultControllerRoute()
-        .RequireAuthorization();
+                endpoints.MapControllers();
             });
         }
     }
