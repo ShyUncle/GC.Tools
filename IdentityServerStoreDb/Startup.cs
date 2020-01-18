@@ -46,7 +46,16 @@ namespace IdentityServerStoreDb
            .AddResourceOwnerValidator<ResourceOwnerPasswordValidator>()
         
            ;//.AddSigningCredential(null)  .AddInMemoryCaching() 
-
+            services.AddCors(options =>
+            {
+                // this defines a CORS policy called "default"
+                options.AddPolicy("default", policy =>
+                {
+                    policy.WithOrigins("http://192.168.1.156:5003")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,7 +66,7 @@ namespace IdentityServerStoreDb
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseCors("default");
             app.UseRouting();
             app.UseIdentityServer();
             app.UseAuthorization();

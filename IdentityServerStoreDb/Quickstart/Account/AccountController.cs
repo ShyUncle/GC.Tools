@@ -65,7 +65,6 @@ namespace IdentityServerStoreDb
                 // we only have one option for logging in and it's an external provider
                 return RedirectToAction("Challenge", "External", new { provider = vm.ExternalLoginScheme, returnUrl });
             }
-
             return View(vm);
         }
 

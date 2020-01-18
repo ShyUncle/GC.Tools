@@ -35,7 +35,7 @@ namespace IdentityServerStoreDb
 
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     ClientSecrets = { new Secret("511536EF-F270-4058-80CA-1C89C192F69A".Sha256()) },
-                   
+
                     AllowedScopes = { "api1" }
                 },
                 new Client{
@@ -50,14 +50,13 @@ namespace IdentityServerStoreDb
                 {
                     ClientId = "mvc",
                     ClientName = "MVC Client",
-
-                    AllowedGrantTypes = GrantTypes.Hybrid,
+                    AllowedGrantTypes = GrantTypes.Code,
                     RequirePkce = true,
                     ClientSecrets = { new Secret("49C1A7E1-0C79-4A89-A3D6-A37998FB86B0".Sha256()) },
 
-                    RedirectUris = { "http://localhost:5002/signin-oidc" },
-                    FrontChannelLogoutUri = "http://localhost:5002/signout-oidc",
-                    PostLogoutRedirectUris = { "http://localhost:5002/signout-callback-oidc" },
+                    RedirectUris = { "http://192.168.1.156:5002/signin-oidc" },
+                    FrontChannelLogoutUri = "http://192.168.1.156:5002/signout-oidc",
+                    PostLogoutRedirectUris = { "http://192.168.1.156:5002/signout-callback-oidc" },
 
                     AllowOfflineAccess = true,
                     AllowedScopes = { "openid", "profile", "api1" }
@@ -68,23 +67,23 @@ namespace IdentityServerStoreDb
                 {
                     ClientId = "spa",
                     ClientName = "SPA Client",
-                    ClientUri = "http://identityserver.io",
-
-                    AllowedGrantTypes = GrantTypes.Implicit,
+                    ClientUri = "http://192.168.1.156:5003",
+                    //RequireConsent=false,//是否显示授权页面
+                    AllowedGrantTypes = GrantTypes.Code,
+                  AllowAccessTokensViaBrowser=true,
+                  //  ClientSecrets={ new Secret("1" .Sha256())},
                     RequirePkce = true,
                     RequireClientSecret = false,
-
                     RedirectUris =
                     {
-                        "http://localhost:5003/index.html",
-                        "http://localhost:5003/callback.html",
-                        "http://localhost:5003/silent.html",
-                        "http://localhost:5003/popup.html",
+                        "http://192.168.1.156:5003/index.html",
+                        "http://192.168.1.156:5003/callback.html",
+                        "http://192.168.1.156:5003/silent.html",
+                        "http://192.168.1.156:5003/popup.html",
                     },
 
-                    PostLogoutRedirectUris = { "http://localhost:5003/index.html" },
-                    AllowedCorsOrigins = { "http://localhost:5003" },
-
+                    PostLogoutRedirectUris = { "http://192.168.1.156:5003/index.html" },
+                    AllowedCorsOrigins = { "http://192.168.1.156:5003" },
                     AllowedScopes = { "openid", "profile", "api1" }
                 }
             };

@@ -28,7 +28,7 @@ namespace IdentityApi
             services.AddAuthentication(Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)
            .AddJwtBearer(Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme, options =>
            {
-               options.Authority = "http://localhost:5000";
+               options.Authority = "http://192.168.1.156:5000";
                options.RequireHttpsMetadata = false;
 
                options.Audience = "api1";
@@ -38,7 +38,7 @@ namespace IdentityApi
                 // this defines a CORS policy called "default"
                 options.AddPolicy("default", policy =>
                 {
-                    policy.WithOrigins("http://localhost:5003")
+                    policy.WithOrigins("http://192.168.1.156:5003")
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });

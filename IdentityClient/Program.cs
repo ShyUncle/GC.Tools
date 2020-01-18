@@ -18,7 +18,11 @@ namespace IdentityClient
         static async Task IdentityTest()
         {
             var client = new HttpClient();
-            var disco = await client.GetDiscoveryDocumentAsync("http://localhost:5000");
+            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest()
+            {
+                Address = "http://192.168.1.156:5000",
+                Policy = new DiscoveryPolicy() { RequireHttps = false }
+            });
             if (disco.IsError)
             {
                 Console.WriteLine(disco.Error);
@@ -31,7 +35,7 @@ namespace IdentityClient
                 ClientId = "client",
                 ClientSecret = "511536EF-F270-4058-80CA-1C89C192F69A",
                 Scope = "api1",
-             
+
             });
             var user = new PasswordTokenRequest
             {
@@ -43,7 +47,7 @@ namespace IdentityClient
                 UserName = "a",
                 Password = "b"
             };
-              tokenResponse = await client.RequestPasswordTokenAsync(user);
+            tokenResponse = await client.RequestPasswordTokenAsync(user);
 
             if (tokenResponse.IsError)
             {
