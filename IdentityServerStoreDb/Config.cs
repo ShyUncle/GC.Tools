@@ -53,7 +53,7 @@ namespace IdentityServerStoreDb
                     AllowedGrantTypes = GrantTypes.Code,
                     RequirePkce = true,
                     ClientSecrets = { new Secret("49C1A7E1-0C79-4A89-A3D6-A37998FB86B0".Sha256()) },
-
+                     RequireConsent=false,//是否显示授权页面
                     RedirectUris = { "http://192.168.1.156:5002/signin-oidc" },
                     FrontChannelLogoutUri = "http://192.168.1.156:5002/signout-oidc",
                     PostLogoutRedirectUris = { "http://192.168.1.156:5002/signout-callback-oidc" },
@@ -68,7 +68,7 @@ namespace IdentityServerStoreDb
                     ClientId = "spa",
                     ClientName = "SPA Client",
                     ClientUri = "http://192.168.1.156:5003",
-                    //RequireConsent=false,//是否显示授权页面
+                    RequireConsent=false,//是否显示授权页面
                     AllowedGrantTypes = GrantTypes.Code,
                   AllowAccessTokensViaBrowser=true,
                   //  ClientSecrets={ new Secret("1" .Sha256())},
