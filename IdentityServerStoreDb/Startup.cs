@@ -13,16 +13,20 @@ using Microsoft.EntityFrameworkCore;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Configuration;
+using System.Security.Cryptography.X509Certificates;
+using Microsoft.IdentityModel.Tokens;
+using System.IO;
+using System.Security.Cryptography;
+using IdentityServer4;
 
 namespace IdentityServerStoreDb
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration )
         {
             Configuration = configuration;
-        }
-
+        } 
         public IConfiguration Configuration { get; }
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -42,10 +46,14 @@ namespace IdentityServerStoreDb
             {
                 options.ConfigureDbContext = b => b.UseSqlServer(connectionString,
                     sql => sql.MigrationsAssembly(migrationsAssembly));
-            }).AddDeveloperSigningCredential( )
+            }).AddDeveloperSigningCredential() 
            .AddResourceOwnerValidator<ResourceOwnerPasswordValidator>()
-        
-           ;//.AddSigningCredential(null)  .AddInMemoryCaching() 
+        //.AddSigningCredential(new X509Certificate2(Path.Combine(Directory.GetCurrentDirectory() , "socialnetwork.pfx"),"123456"))
+        //.AddSigningCredential(new RsaSecurityKey(RSA.Create(2048))
+        //{
+        //    KeyId ="1232132131231231231231232"
+        //}, IdentityServerConstants.RsaSigningAlgorithm.RS256)
+           ;//  .AddInMemoryCaching() 
             services.AddCors(options =>
             {
                 // this defines a CORS policy called "default"

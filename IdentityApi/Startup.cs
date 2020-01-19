@@ -30,7 +30,7 @@ namespace IdentityApi
            {
                options.Authority = "http://192.168.1.156:5000";
                options.RequireHttpsMetadata = false;
-
+               
                options.Audience = "api1";
            });
             services.AddCors(options =>
