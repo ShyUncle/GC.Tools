@@ -29,7 +29,7 @@ namespace IdentityServerStoreDb
             {
                 // client credentials flow client
                 new Client
-                {
+                { 
                     ClientId = "client",
                     ClientName = "Client Credentials Client",
 
