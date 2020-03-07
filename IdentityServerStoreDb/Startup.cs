@@ -36,7 +36,7 @@ namespace IdentityServerStoreDb
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
             var idBuilder = services.AddIdentityServer()
-            //.AddTestUsers(TestUsers.Users)
+            .AddTestUsers(TestUsers.Users)
             .AddConfigurationStore(options =>
             {
                 options.ConfigureDbContext = b => b.UseSqlServer(connectionString,
@@ -47,7 +47,7 @@ namespace IdentityServerStoreDb
                 options.ConfigureDbContext = b => b.UseSqlServer(connectionString,
                     sql => sql.MigrationsAssembly(migrationsAssembly));
             }).AddDeveloperSigningCredential() 
-           .AddResourceOwnerValidator<ResourceOwnerPasswordValidator>()
+         //  .AddResourceOwnerValidator<ResourceOwnerPasswordValidator>()
         //.AddSigningCredential(new X509Certificate2(Path.Combine(Directory.GetCurrentDirectory() , "socialnetwork.pfx"),"123456"))
         //.AddSigningCredential(new RsaSecurityKey(RSA.Create(2048))
         //{

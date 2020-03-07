@@ -13,9 +13,10 @@ namespace IdentityServerStoreDb
     {
         public static List<TestUser> Users = new List<TestUser>
         {
-            new TestUser{SubjectId = "818727", Username = "alice", Password = "alice", 
-                Claims = 
+            new TestUser{SubjectId = "818727", Username = "alice", Password = "alice",
+                Claims =
                 {
+                    new Claim("role","abc管理员"),
                     new Claim(JwtClaimTypes.Name, "Alice Smith"),
                     new Claim(JwtClaimTypes.GivenName, "Alice"),
                     new Claim(JwtClaimTypes.FamilyName, "Smith"),
