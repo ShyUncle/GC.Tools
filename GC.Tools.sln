@@ -29,9 +29,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityMVC", "IdentityMVC\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServerStoreDb", "IdentityServerStoreDb\IdentityServerStoreDb.csproj", "{7AD6B917-C7AA-4E19-A6B6-ABE5A4192697}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityApi", "IdentityApi\IdentityApi.csproj", "{6E4A839A-D420-4BB8-B4BA-DF74ADE676BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityApi", "IdentityApi\IdentityApi.csproj", "{6E4A839A-D420-4BB8-B4BA-DF74ADE676BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentitySPA", "IdentitySPA\IdentitySPA.csproj", "{35BF193B-899C-4708-B06E-439154CA760D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentitySPA", "IdentitySPA\IdentitySPA.csproj", "{35BF193B-899C-4708-B06E-439154CA760D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RsaTest", "RsaTest\RsaTest.csproj", "{641CE178-2E0D-452C-ACB6-F64C2AA7DA62}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +101,10 @@ Global
 		{35BF193B-899C-4708-B06E-439154CA760D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35BF193B-899C-4708-B06E-439154CA760D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35BF193B-899C-4708-B06E-439154CA760D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{641CE178-2E0D-452C-ACB6-F64C2AA7DA62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{641CE178-2E0D-452C-ACB6-F64C2AA7DA62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{641CE178-2E0D-452C-ACB6-F64C2AA7DA62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{641CE178-2E0D-452C-ACB6-F64C2AA7DA62}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
