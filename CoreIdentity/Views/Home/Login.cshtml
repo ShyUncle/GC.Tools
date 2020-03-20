@@ -1,0 +1,14 @@
+﻿
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h1>Login</h1>
+@using (Html.BeginForm("login", "home"))
+{ 
+<div>
+    名字：<input type="text" name="username"/>
+    密码：<input type="text" name="password">
+    <button type="submit">登录</button>
+</div>
+}
