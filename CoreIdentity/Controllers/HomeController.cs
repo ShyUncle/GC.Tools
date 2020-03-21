@@ -17,11 +17,15 @@ namespace CoreIdentity.Controllers
         private readonly ILogger<HomeController> _logger;
         SignInManager<CustomerUser> _SignInManager;
         UserManager<CustomerUser> _userManager;
-        public HomeController(ILogger<HomeController> logger, SignInManager<CustomerUser> signInManager, UserManager<CustomerUser> userManager)
+        RoleManager<CustomerRole> _roleManager;
+        IAuthorizationService _authorizationService;
+        public HomeController(ILogger<HomeController> logger, SignInManager<CustomerUser> signInManager, UserManager<CustomerUser> userManager, RoleManager<CustomerRole> role,IAuthorizationService authorizationService)
         {
             _logger = logger;
             _SignInManager = signInManager;
             _userManager = userManager;
+            _roleManager = role;
+            _authorizationService = authorizationService;
         }
 
         public IActionResult Index()
@@ -30,11 +34,32 @@ namespace CoreIdentity.Controllers
         }
 
         [Authorize]
-        public IActionResult Privacy()
+        public async Task<IActionResult> Privacy()
         {
+            var userName = HttpContext.User.Identity.Name;
+            var user = await _userManager.FindByNameAsync(userName);
+            var roles=await _userManager.GetRolesAsync(user);
+            if (!await _roleManager.RoleExistsAsync("admin"))
+            {
+                await _roleManager.CreateAsync(new CustomerRole()
+                {
+                    Name = "admin",
+                    ParentRoleId = 1
+                });
+                await _userManager.AddToRoleAsync(user, "admin");
+            }
             return View();
         }
 
+        [Authorize(Roles ="admin")]
+        public async Task<IActionResult> Roles()
+        {
+            var userName = HttpContext.User.Identity.Name;
+            var user = await _userManager.FindByNameAsync(userName);
+            var roles = await _userManager.GetRolesAsync(user);
+             
+            return View();
+        }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -50,6 +75,7 @@ namespace CoreIdentity.Controllers
         public async Task<IActionResult> Login(CustomerUser customer, [FromQuery]string returnurl = null)
         {
             var user = await _userManager.FindByNameAsync(customer.UserName);
+
             if (user == null)
             {
                 user = new CustomerUser
@@ -78,7 +104,7 @@ namespace CoreIdentity.Controllers
                 }
             }
             else if (result1.IsNotAllowed)
-            { 
+            {
             }
 
             return RedirectToAction("index");
