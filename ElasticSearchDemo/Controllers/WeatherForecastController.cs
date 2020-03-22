@@ -26,7 +26,6 @@ namespace ElasticSearchDemo.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-            
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
