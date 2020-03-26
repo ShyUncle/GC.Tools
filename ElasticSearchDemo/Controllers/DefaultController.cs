@@ -18,76 +18,124 @@ namespace ElasticSearchDemo.Controllers
         public DefaultController(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
-        }
-        private static ElasticClient client;
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public async Task<object> Get()
-        {
+            var node = new Uri("http://172.24.91.110:9200");
 
-            // var node = new Uri("http://172.24.91.110:9200");
-
-            var node = new Uri("http://192.168.174.130:9200");
+            // var node = new Uri("http://192.168.174.130:9200");
             var settings = new ConnectionSettings(node).DefaultIndex("goodsindex");
             settings.EnableHttpCompression(true);
-            client = client ?? new ElasticClient(settings);
-            var config = new ConnectionConfiguration(node);
-            config.EnableHttpCompression(true);
-            var lowclient = new Elasticsearch.Net.ElasticLowLevelClient(config);
-            
-            var http = _httpClientFactory.CreateClient("nest"); 
-            
-            http.BaseAddress = new Uri("http://192.168.174.130:9200");
-            //http.DefaultRequestHeaders.TryAddWithoutValidation("Connection", "keep-alive");
-            //http.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "PostmanRuntime/7.23.0");
-            //http.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "*/*");
-            //http.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate, br");
-            //http.DefaultRequestHeaders.TryAddWithoutValidation("Host", "192.168.174.130:9200");
-            var ss = await http.GetAsync("/goodsindex/_doc/dcddadf503c24266a050f8e09771a112");
-            var contentType = ss.Content.Headers.ContentType;
-            if (string.IsNullOrEmpty(contentType.CharSet))
-            {
-                contentType.CharSet = "utf-8";
-            }
-            var sssd =await ss.Content.ReadAsStringAsync();
-            var a = lowclient.Get<SearchResponse<Goods>>("goodsindex", "dcddadf503c24266a050f8e09771a112");
-            var respon = client.Get<Goods>("dcddadf503c24266a050f8e09771a112").Source;
-            var resp = client.LowLevel.Get<SearchResponse<Goods>>("goodsindex", "dcddadf503c24266a050f8e09771a112").Documents;
-            resp = (await client.LowLevel.GetAsync<SearchResponse<Goods>>("goodsindex", "dcddadf503c24266a050f8e09771a112")).Documents;
-            List<string> ids = new List<string>();
+
+            client = new ElasticClient(settings);
+          
+            // var node = new Uri("http://192.168.174.130:9200");
+            var settings1 = new ConnectionSettings(node).DefaultIndex("person");
+            settings1.EnableHttpCompression(true);
+
+            clientPerson = new ElasticClient(settings1);
+
+        }
+        private ElasticClient client;
+
+        private ElasticClient clientPerson;
+        [HttpGet]
+        /// <summary>
+        /// 初始化数据
+        /// </summary>
+        /// <returns></returns>
+        public async Task Get()
+        {
+            var list = new List<Person>() {
+            new Person(){
+             FirstName="张",
+              LastName="三",
+               Id=1,
+            },
+            new Person(){
+             FirstName="李",
+              LastName="四",
+               Id=2,
+            },
+                new Person(){
+             FirstName="王",
+              LastName="五",
+               Id=3,
+            },new Person(){
+             FirstName="赵",
+              LastName="六",
+               Id=4,
+            },new Person(){
+             FirstName="张",
+              LastName="七",
+               Id=5,
+            },new Person(){
+             FirstName="陆",
+              LastName="七",
+               Id=6,
+            },new Person(){
+             FirstName="老",
+              LastName="七",
+               Id=7,
+            },new Person(){
+             FirstName="张",
+              LastName="五七",
+               Id=8,
+            },
+            };
+    
+             var aa= clientPerson.IndexMany(list, IndexName.From<Person>());
+    
             for (var i = 0; i < 10; i++)
             {
                 var goods = new Goods()
                 {
                     CreateDate = DateTime.Now,
-                    Id = Guid.NewGuid().ToString("N"),
+                    Id = i.ToString(),
                     Name = "商品" + i,
                     Price = i,
                     Tags = i.ToString()
                 };
-                ids.Add(goods.Id);
-                var response = client.IndexDocument(goods);
+                var response = await client.IndexDocumentAsync(goods);
                 if (response.Result != Result.Created)
                 {
 
                 }
             }
-            var response1 = client.Get<Goods>("b395fd06c7e94a07bace0cb2dfd42eaa"); // returns an IGetResponse mapped 1-to-1 with the Elasticsearch JSON response
-            var tweet = response1.Source; // the original document
-            var list = await client.SearchAsync<Goods>(s => s.From(0).Size(5)
-            .Query(q => q.Term(t => t.Name, "商品1")
-            || q.Match(mq => mq.Field(f => f.Tags).Query("8"))
-            || q.Match(mq => mq.Field(f => f.Tags).Query("6"))));
-            if (list.Documents.Count > 0)
-            {
 
-            }
-            return list.Documents;
+        }
+
+        /// <summary>
+        /// 搜索
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("search")]
+        public async Task<object> Search()
+        {
+           var res= await clientPerson.SearchAsync<Person>(d =>d.From(0).Size(10).Query(s=>s.Match(q=>q.Field(f=>f.LastName).Query("七"))) );
+            return res.Documents;
+
+        }
+
+        /// <summary>
+        /// 聚合
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("Aggregations")]
+        public async Task<object> Aggregations()
+        { 
+            var res = await clientPerson.SearchAsync<Person>(d => d.Size(0).Query(s => 
+            s.Match(q => q.Field(f => f.LastName).Query("七"))).Aggregations(a=>a.Terms("xing",s=>s.Field(f=>f.FirstName))));
+            return res.Aggregations.Terms("xing").Buckets.Select(x=>new { x.Key,x.DocCount});
         }
     }
+    public class Person
+    {
+        public int Id { get; set; }
 
+       
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+    }
     public class Goods
     {
         public string Id { get; set; }
