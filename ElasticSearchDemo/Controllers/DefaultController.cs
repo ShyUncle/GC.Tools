@@ -18,22 +18,17 @@ namespace ElasticSearchDemo.Controllers
         public DefaultController(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
-            var node = new Uri("http://172.24.91.110:9200");
+            //var node = new Uri("http://172.24.91.110:9200");
 
-            // var node = new Uri("http://192.168.174.130:9200");
-            var settings = new ConnectionSettings(node).DefaultIndex("goodsindex");
-            settings.EnableHttpCompression(true);
-
-            client = new ElasticClient(settings);
-          
-            // var node = new Uri("http://192.168.174.130:9200");
+            var node = new Uri("http://192.168.174.130:9200");
+        
             var settings1 = new ConnectionSettings(node).DefaultIndex("person");
             settings1.EnableHttpCompression(true);
-
+            //settings1.ServerCertificateValidationCallback(CertificateValidations.AllowAll);
             clientPerson = new ElasticClient(settings1);
 
+
         }
-        private ElasticClient client;
 
         private ElasticClient clientPerson;
         [HttpGet]
@@ -43,25 +38,31 @@ namespace ElasticSearchDemo.Controllers
         /// <returns></returns>
         public async Task Get()
         {
+            var r = clientPerson.Indices.Delete("person");
+            var bc = clientPerson.Indices.Create("person", x => x.Map<Person>((m) => m.AutoMap().Properties(p => p.Text(x => x.Name(x => x.FirstName).Fielddata(true)))));
             var list = new List<Person>() {
             new Person(){
              FirstName="张",
               LastName="三",
                Id=1,
+               Age=25
             },
             new Person(){
              FirstName="李",
               LastName="四",
                Id=2,
+               Age=35
             },
                 new Person(){
              FirstName="王",
               LastName="五",
                Id=3,
+               Age=26
             },new Person(){
              FirstName="赵",
               LastName="六",
                Id=4,
+               Age=26
             },new Person(){
              FirstName="张",
               LastName="七",
@@ -70,36 +71,37 @@ namespace ElasticSearchDemo.Controllers
              FirstName="陆",
               LastName="七",
                Id=6,
+               Age=18
             },new Person(){
              FirstName="老",
               LastName="七",
                Id=7,
+               Age=43
             },new Person(){
              FirstName="张",
               LastName="五七",
                Id=8,
+               Age=20
             },
             };
-    
-             var aa= clientPerson.IndexMany(list, IndexName.From<Person>());
-    
-            for (var i = 0; i < 10; i++)
+
+            // var aa = clientPerson.IndexMany(list, IndexName.From<Person>());
+            List<string> l = new List<string>() { "赵", "钱", "宋", "李", "孙", "周", "吴", "郑", "王", "林" };
+            List<string> le = new List<string>() { "一", "二", "三", "四", "五", "六", "七", "八", "九", "十" };
+            for (var i = 20; i < 1000; i++)
             {
-                var goods = new Goods()
+                var perso = new Person()
                 {
-                    CreateDate = DateTime.Now,
-                    Id = i.ToString(),
-                    Name = "商品" + i,
-                    Price = i,
-                    Tags = i.ToString()
+                    Age = i,
+                    FirstName = l[i % 10],
+                    LastName = le[i % 10],
+                    Id = i
+
                 };
-                var response = await client.IndexDocumentAsync(goods);
-                if (response.Result != Result.Created)
-                {
+                list.Add(perso);
 
-                }
             }
-
+            var response = await clientPerson.IndexManyAsync<Person>(list);
         }
 
         /// <summary>
@@ -110,10 +112,35 @@ namespace ElasticSearchDemo.Controllers
         [Route("search")]
         public async Task<object> Search()
         {
-           var res= await clientPerson.SearchAsync<Person>(d =>d.From(0).Size(10).Query(s=>s.Match(q=>q.Field(f=>f.LastName).Query("七"))) );
+            var res = await clientPerson.SearchAsync<Person>(d => d.From(0).Size(10).Query(s => s.Match(q => q.Field(f => f.LastName).Query("七"))));
             return res.Documents;
 
         }
+        /// <summary>
+        /// 搜索
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("searchAge")]
+        public async Task<object> SearchAge()
+        {
+            var res = await clientPerson.SearchAsync<Person>(d => d.From(0).Size(10).Query(s => s.Range(r => r.Field(f => f.Age).GreaterThan(25))));
+            return res.Documents;
+
+        }
+
+        ///// <summary>
+        ///// 分析
+        ///// </summary>
+        ///// <returns></returns>
+        //[HttpGet]
+        //[Route("Analyze")]
+        //public async Task<object> Analyze()
+        //{
+        //    var res = await clientPerson.Indices.AnalyzeAsync();
+        //    return res.Detail;
+
+        //}
 
         /// <summary>
         /// 聚合
@@ -122,17 +149,18 @@ namespace ElasticSearchDemo.Controllers
         [HttpGet]
         [Route("Aggregations")]
         public async Task<object> Aggregations()
-        { 
-            var res = await clientPerson.SearchAsync<Person>(d => d.Size(0).Query(s => 
-            s.Match(q => q.Field(f => f.LastName).Query("七"))).Aggregations(a=>a.Terms("xing",s=>s.Field(f=>f.FirstName))));
-            return res.Aggregations.Terms("xing").Buckets.Select(x=>new { x.Key,x.DocCount});
+        {   //映射firstname可以作为sort,聚合
+            var res = await clientPerson.SearchAsync<Person>(d => d.Size(0).Query(s =>
+            s.Match(q => q.Field(f => f.LastName).Query("七"))).Aggregations(a => a.Terms("xing", s => s.Field(f => f.FirstName))));
+            return res.Aggregations.Terms("xing").Buckets.Select(x => new { x.Key, x.DocCount });
         }
     }
     public class Person
     {
         public int Id { get; set; }
 
-       
+        public int Age { get; set; }
+
         public string FirstName { get; set; }
         public string LastName { get; set; }
     }
