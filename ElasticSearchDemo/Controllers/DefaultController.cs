@@ -21,7 +21,7 @@ namespace ElasticSearchDemo.Controllers
             //var node = new Uri("http://172.24.91.110:9200");
 
             var node = new Uri("http://192.168.174.130:9200");
-        
+
             var settings1 = new ConnectionSettings(node).DefaultIndex("person");
             settings1.EnableHttpCompression(true);
             //settings1.ServerCertificateValidationCallback(CertificateValidations.AllowAll);
@@ -102,6 +102,9 @@ namespace ElasticSearchDemo.Controllers
 
             }
             var response = await clientPerson.IndexManyAsync<Person>(list);
+            //    await clientPerson.IndexAsync(list[0], i => i.Index("person"));//自定义索引
+            // await clientPerson.BulkAsync(b => b.Index("person").IndexMany(list));//自定义索引
+         //   clientPerson.BulkAll(list, i => i.Index("person").BackOffTime("30s").BackOffRetries(10).RefreshOnCompleted().MaxDegreeOfParallelism(Environment.ProcessorCount).Size(1000)).Wait(;
         }
 
         /// <summary>
