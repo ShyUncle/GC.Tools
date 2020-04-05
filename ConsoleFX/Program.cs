@@ -125,8 +125,9 @@ PixelFormat.Format8bppIndexed
                 rect.Width += 2 * index;
                 using (Graphics g = Graphics.FromImage(bmp))
                 {
-                    // g.DrawRectangle(new Pen(new SolidBrush(Color.Red), 2), rect);
+                   
                     g.DrawImage(myImage, rect);
+                    g.DrawRectangle(new Pen(new SolidBrush(Color.Red), 2), rect);
                 }
                 stopwatch.Stop();
                 Console.WriteLine("耗时" + stopwatch.ElapsedMilliseconds);
