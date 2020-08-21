@@ -1,0 +1,15 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="WindowsFormsApp2.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="设置" Type="System.String" Scope="User">
+      <Value Profile="(Default)">的撒发生的</Value>
+    </Setting>
+    <Setting Name="ad3232" Type="System.String" Scope="User">
+      <Value Profile="(Default)">2323</Value>
+    </Setting>
+    <Setting Name="sead3232" Type="System.String" Scope="User">
+      <Value Profile="(Default)">2323</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
