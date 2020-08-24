@@ -15,19 +15,67 @@ using System.Diagnostics;
 namespace ConsoleFX
 {
     class Program
-    {
+    {  // 10进制转换成36进制
+        public static string int10Convert36(int i)
+        {
+            string str = "";
+            while (i > 35)
+            {
+                int j = i % 36;
+                str += ((j <= 9) ? Convert.ToChar(j + '0') : Convert.ToChar(j - 10 + 'A'));
+                i = i / 36;
+            }
+            str += ((i <= 9) ? Convert.ToChar(i + '0') : Convert.ToChar(i - 10 + 'A'));
+
+            Char[] c = str.ToCharArray();
+            Array.Reverse(c);
+            return new string(c);
+        }
         static void Main(string[] args)
         {
-            int i = 0;
-            while (i < 100)
+            List<string> codes = new List<string>();
+            int count = 0;
+            while (codes.Count <500)
             {
-                i++;
                 byte[] buffer = Encoding.UTF8.GetBytes(Guid.NewGuid().ToString("N"));
 
                 var s = BitConverter.ToInt32(buffer, 0);
                 var re = new BaseConversionHelper().SixtyTwoScale(Convert.ToInt64(s));
+
+                if (codes.Contains(re))
+                {
+                    ConsoleColor currentForeColor = Console.ForegroundColor;
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    count++;
+                    Console.WriteLine($"{s}重复{re},重复总次数{count}");
+                    Console.ForegroundColor = currentForeColor;
+                }
+                else
+                    codes.Add(re);
                 Console.WriteLine($"原值{s}新值{re}");
             }
+            Console.WriteLine($"{codes.Count}重复总次数{count}");
+            count = 0;
+            while (codes.Count < 1000)
+            {
+                byte[] buffer = Encoding.UTF8.GetBytes(Guid.NewGuid().ToString("N"));
+
+                var s = BitConverter.ToInt32(buffer, 0); 
+                var re = new BaseConversionHelper().SixtyTwoScale(Convert.ToInt64(s));
+
+                if (codes.Contains(re))
+                {
+                    ConsoleColor currentForeColor = Console.ForegroundColor;
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    count++;
+                    Console.WriteLine($"{s}重复{re},重复总次数{count}");
+                    Console.ForegroundColor = currentForeColor;
+                }
+                else
+                    codes.Add(re);
+                Console.WriteLine($"原值{s}新值{re}");
+            }
+            Console.WriteLine($"{codes.Count}重复总次数{count}");
             //while (true)
             //{
             //    Qrcode();
@@ -222,7 +270,7 @@ PixelFormat.Format8bppIndexed
                 rect.Width += 2 * index;
                 using (Graphics g = Graphics.FromImage(bmp))
                 {
-                   
+
                     g.DrawImage(myImage, rect);
                     g.DrawRectangle(new Pen(new SolidBrush(Color.Red), 2), rect);
                 }
