@@ -18,6 +18,7 @@ namespace ConsoleFX
     {  // 10进制转换成36进制
         public static string int10Convert36(int i)
         {
+        
             string str = "";
             while (i > 35)
             {
@@ -32,54 +33,56 @@ namespace ConsoleFX
             return new string(c);
         }
         static void Main(string[] args)
-        {
-            List<string> codes = new List<string>();
-            int count = 0;
-            while (codes.Count <500)
+        {  
+            #region 生成激活码
+            //    List<string> codes = new List<string>();
+            //    int count = 0;
+            //    while (codes.Count <500)
+            //    {
+            //        byte[] buffer = Encoding.UTF8.GetBytes(Guid.NewGuid().ToString("N"));
+
+            //        var s = BitConverter.ToInt64(buffer, 0);
+            //        var re = new BaseConversionHelper().SixtyTwoScale(Convert.ToInt64(s));
+
+            //        if (codes.Contains(re))
+            //        {
+            //            ConsoleColor currentForeColor = Console.ForegroundColor;
+            //            Console.ForegroundColor = ConsoleColor.Red;
+            //            count++;
+            //            Console.WriteLine($"{s}重复{re},重复总次数{count}");
+            //            Console.ForegroundColor = currentForeColor;
+            //        }
+            //        else
+            //            codes.Add(re);
+            //        Console.WriteLine($"原值{s}新值{re}");
+            //    }
+            //    Console.WriteLine($"{codes.Count}重复总次数{count}");
+            //    count = 0;
+            //    while (codes.Count < 2000)
+            //    {
+            //        byte[] buffer = Encoding.UTF8.GetBytes(Guid.NewGuid().ToString("N"));
+
+            //        var s = BitConverter.ToInt32(buffer, 0); 
+            //        var re = new BaseConversionHelper().SixtyTwoScale(Convert.ToInt64(s));
+
+            //        if (codes.Contains(re))
+            //        {
+            //            ConsoleColor currentForeColor = Console.ForegroundColor;
+            //            Console.ForegroundColor = ConsoleColor.Red;
+            //            count++;
+            //            Console.WriteLine($"{s}重复{re},重复总次数{count}");
+            //            Console.ForegroundColor = currentForeColor;
+            //        }
+            //        else
+            //            codes.Add(re);
+            //        Console.WriteLine($"原值{s}新值{re}");
+            //    }
+            //    Console.WriteLine($"{codes.Count}重复总次数{count}");
+            #endregion
+            while (true)
             {
-                byte[] buffer = Encoding.UTF8.GetBytes(Guid.NewGuid().ToString("N"));
-
-                var s = BitConverter.ToInt32(buffer, 0);
-                var re = new BaseConversionHelper().SixtyTwoScale(Convert.ToInt64(s));
-
-                if (codes.Contains(re))
-                {
-                    ConsoleColor currentForeColor = Console.ForegroundColor;
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    count++;
-                    Console.WriteLine($"{s}重复{re},重复总次数{count}");
-                    Console.ForegroundColor = currentForeColor;
-                }
-                else
-                    codes.Add(re);
-                Console.WriteLine($"原值{s}新值{re}");
+                Qrcode();
             }
-            Console.WriteLine($"{codes.Count}重复总次数{count}");
-            count = 0;
-            while (codes.Count < 1000)
-            {
-                byte[] buffer = Encoding.UTF8.GetBytes(Guid.NewGuid().ToString("N"));
-
-                var s = BitConverter.ToInt32(buffer, 0); 
-                var re = new BaseConversionHelper().SixtyTwoScale(Convert.ToInt64(s));
-
-                if (codes.Contains(re))
-                {
-                    ConsoleColor currentForeColor = Console.ForegroundColor;
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    count++;
-                    Console.WriteLine($"{s}重复{re},重复总次数{count}");
-                    Console.ForegroundColor = currentForeColor;
-                }
-                else
-                    codes.Add(re);
-                Console.WriteLine($"原值{s}新值{re}");
-            }
-            Console.WriteLine($"{codes.Count}重复总次数{count}");
-            //while (true)
-            //{
-            //    Qrcode();
-            //}
             //RecognitionImage();
             //   SimilarSearchDemo();
             // SameHqSearchDemo();
@@ -196,13 +199,13 @@ PixelFormat.Format8bppIndexed
             Bitmap myImage = Image.FromFile(path) as Bitmap;
             Console.WriteLine("请输入地址");
             string url = Console.ReadLine();
-            //HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
-            //request.Method = "Get";
-            Bitmap oriBitmap = Image.FromFile(@"C:\Users\admin\Desktop\微信图片_20200716163059.jpg") as Bitmap;
-            //using (var stream = request.GetResponse().GetResponseStream())
-            //{
-            //    oriBitmap = Image.FromStream(stream) as Bitmap;
-            //}
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
+            request.Method = "Get";
+            Bitmap oriBitmap = Image.FromFile(@"e92bda7fa55c4f41a8e3dc65ce56755f.png") as Bitmap;
+            using (var stream = request.GetResponse().GetResponseStream())
+            {
+                oriBitmap = Image.FromStream(stream) as Bitmap;
+            }
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             var source = new BitmapLuminanceSource(oriBitmap);
