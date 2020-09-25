@@ -1,6 +1,7 @@
 ﻿using NPOI.XWPF.UserModel;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -43,6 +44,7 @@ namespace GC.Tools.NPOITest
                     {
                         var imgData = item.GetPictureData();
                         var img = GetImageFromByte(imgData.Data);
+                        img.Save(imgData.FileName, ImageFormat.Jpeg);
                         Console.WriteLine("图片" + imgData.FileName);
                     }
                 }
