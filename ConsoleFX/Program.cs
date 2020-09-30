@@ -11,6 +11,7 @@ using ZXing.Common;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Diagnostics;
+using System.Threading;
 
 namespace ConsoleFX
 {
@@ -18,7 +19,7 @@ namespace ConsoleFX
     {  // 10进制转换成36进制
         public static string int10Convert36(int i)
         {
-        
+
             string str = "";
             while (i > 35)
             {
@@ -33,7 +34,7 @@ namespace ConsoleFX
             return new string(c);
         }
         static void Main(string[] args)
-        {  
+        {
             #region 生成激活码
             //    List<string> codes = new List<string>();
             //    int count = 0;
@@ -79,11 +80,18 @@ namespace ConsoleFX
             //    }
             //    Console.WriteLine($"{codes.Count}重复总次数{count}");
             #endregion
+
+            //  kuijichafen.JieXi(File.ReadAllText("C:/Users/admin/Desktop/全国会计资格评价网.html"));
+
             while (true)
             {
-                Qrcode();
+                new kuijichafen().Get("372930197711291882", "马绍玲", "25");
+                // Thread.Sleep(5000);
+                new kuijichafen().Get("411424200002146246", "郑爽爽", "26");
+                new kuijichafen().Get("522225197410140035", "李万全", "34");
+                Console.ReadLine();
             }
-            //RecognitionImage();
+            // RecognitionImage();
             //   SimilarSearchDemo();
             // SameHqSearchDemo();
             Console.ReadLine();
@@ -116,9 +124,9 @@ namespace ConsoleFX
         static void RecognitionImage()
         {
             // 设置APPID/AK/SK
-            var APP_ID = "21420045";
-            var API_KEY = "YdWwajRotuPVdCMc35qB1U7S";
-            var SECRET_KEY = "ePIaisz22vZungzdCaIuOumYKiVYObME";
+            var APP_ID = "21512957";
+            var API_KEY = "OFez8onF6CqQ8khtNnecrWGD";
+            var SECRET_KEY = "2aAt05myciGn6DvGPGLAL8LQ5v4kMm56";
 
             var client = new Baidu.Aip.Ocr.Ocr(API_KEY, SECRET_KEY);
             client.Timeout = 60000;  // 修改超时时间
@@ -138,7 +146,7 @@ namespace ConsoleFX
             //        result = client.GeneralBasicUrl(url, options);
             //        Console.WriteLine(result);
 
-            var image = File.ReadAllBytes(@"C:\Users\admin\Desktop\微信图片_20200716152858.jpg");
+            var image = File.ReadAllBytes(@"C:\Users\admin\Desktop\微信图片_20200930104921.png");
             // 调用通用文字识别, 图片参数为本地图片，可能会抛出网络等异常，请使用try/catch捕获
             var result1 = client.GeneralBasic(image);
             Console.WriteLine(result1);
