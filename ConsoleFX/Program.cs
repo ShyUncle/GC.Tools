@@ -81,14 +81,18 @@ namespace ConsoleFX
             //    Console.WriteLine($"{codes.Count}重复总次数{count}");
             #endregion
 
-            //  kuijichafen.JieXi(File.ReadAllText("C:/Users/admin/Desktop/全国会计资格评价网.html"));
+            //  new kuijichafen().JieXi(File.ReadAllText("C:/Users/admin/Desktop/全国会计资格评价网.html"));
 
             while (true)
-            {
-                new kuijichafen().Get("372930197711291882", "马绍玲", "25");
-                // Thread.Sleep(5000);
-                new kuijichafen().Get("411424200002146246", "郑爽爽", "26");
+            {  
                 new kuijichafen().Get("522225197410140035", "李万全", "34");
+                Thread.Sleep(1000);
+                new kuijichafen().Get("412829198802044488", "胡雪媛", "26", 1);
+                new kuijichafen().Get("372930197711291882", "马绍玲", "25");
+                Thread.Sleep(1000);
+                new kuijichafen().Get("411424200002146246", "郑爽爽", "26");
+                Thread.Sleep(1000);
+          
                 Console.ReadLine();
             }
             // RecognitionImage();

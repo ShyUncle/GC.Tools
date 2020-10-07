@@ -18,9 +18,14 @@ namespace ConsoleFX
     public class kuijichafen
     {
         public static List<string> HostList = new List<string> { "kzp.mof.gov.cn", "221.181.73.5:81/", "60.208.116.171/", "103.59.150.151:81/" };
+        public static List<string> Page = new List<string> { "1_c4036a022596222", "1_b4036a0225201913" };
         public string Host { get; set; }
-        public string GetHost()
+        public string GetHost(int type)
         {
+            if (type == 1)
+            {
+                return HostList[0];
+            }
             if (string.IsNullOrEmpty(Host))
             {
                 var random = new Random(DateTime.Now.Millisecond);
@@ -30,15 +35,15 @@ namespace ConsoleFX
 
             return Host;
         }
-        public void MakeCommonRequest(HttpWebRequest request)
+        public void MakeCommonRequest(HttpWebRequest request, int type = 0)
         {
             request.Timeout = 10000;
             request.KeepAlive = true;
-            request.Referer = $"http://{GetHost()}/cjcx/1_c4036a022596222.jsp";
+            request.Referer = $"http://{GetHost(type)}/cjcx/{Page[type]}.jsp";
             request.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
             request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36";
         }
-        public void JieXi(string html)
+        public void JieXi(string html, int type = 0)
         {
 
             //从url中加载
@@ -56,44 +61,60 @@ namespace ConsoleFX
                 Console.WriteLine(b[0].Trim() + ":" + b[1].Trim());
             }
             HtmlNode tableNode = doc.DocumentNode.SelectSingleNode("//table[@class='cjcx_jg']");
-            var tds = tableNode.SelectNodes("child::tr[3]/td");
-            Console.WriteLine(tds[0].InnerText + ":" + tds[1].InnerText.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace(" ", ""));
-            tds = tableNode.SelectNodes("child::tr[4]/td");
-            Console.WriteLine(tds[0].InnerText + ":" + tds[1].InnerText.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace(" ", ""));
-        }
-        public void Get(string idcard, string name, string provinceId)
-        {
-            Console.WriteLine(GetHost());
-            var cc = GetCookie();
-            var code = GetCode(cc);
-            if (string.IsNullOrEmpty(code) || code.Length != 4)
+            var tds = tableNode.SelectNodes("//tr[@bgcolor='#FFFFFF']");
+            foreach (var item in tds)
             {
-                code = GetCode(cc);
+                var td = item.SelectNodes("./td");
+                Console.WriteLine(td[0].InnerText + ":" + td[1].InnerText.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace(" ", ""));
             }
-            if (string.IsNullOrEmpty(code) || code.Length != 4)
-            {
-                Console.WriteLine("验证码识别错误");
-                return;
-            }
-            var uri = new Uri($"http://{GetHost()}/cjcx/2_c4036a022596222.jsp");
-            var request = (HttpWebRequest)WebRequest.Create(uri);
-            request.ContentType = "application/x-www-form-urlencoded";
-            request.CookieContainer = new CookieContainer();
-            request.CookieContainer.SetCookies(uri, cc);
-            request.Method = "post";
-            MakeCommonRequest(request);
-            string str = $"province={provinceId}&sfzh={idcard}&xm={ HttpUtility.UrlEncode(name)}&atch={code}";
-            byte[] buffer = Encoding.Default.GetBytes(str);
-            request.ContentLength = buffer.Length;
-            request.GetRequestStream().Write(buffer, 0, buffer.Length);
-            var response = (HttpWebResponse)request.GetResponse();
-            StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-            string result = reader.ReadToEnd();
-            JieXi(result);
+            //tds = tableNode.SelectNodes("child::tr[4]/td");
+            //Console.WriteLine(tds[0].InnerText + ":" + tds[1].InnerText.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace(" ", ""));
         }
-        public string GetCookie()
+        public void Get(string idcard, string name, string provinceId, int type = 0)
         {
-            var uri = new Uri($"http://{GetHost()}/cjcx/1_c4036a022596222.jsp");
+            try
+            {
+                Console.WriteLine(GetHost(type));
+                Thread.Sleep(1000);
+                var cc = GetCookie(type);
+                Thread.Sleep(1000);
+                var code = GetCode(cc, type);
+                if (string.IsNullOrEmpty(code) || code.Length != 4)
+                {
+                    Thread.Sleep(1000);
+                    code = GetCode(cc, type);
+                }
+                if (string.IsNullOrEmpty(code) || code.Length != 4)
+                {
+                    Console.WriteLine("验证码识别错误");
+                    return;
+                }
+
+                Thread.Sleep(500);
+                var uri = new Uri($"http://{GetHost(type)}/cjcx/2_{Page[type].Replace("1_", "")}.jsp");
+                var request = (HttpWebRequest)WebRequest.Create(uri);
+                request.ContentType = "application/x-www-form-urlencoded";
+                request.CookieContainer = new CookieContainer();
+                request.CookieContainer.SetCookies(uri, cc);
+                request.Method = "post";
+                MakeCommonRequest(request);
+                string str = $"province={provinceId}&sfzh={idcard}&xm={ HttpUtility.UrlEncode(name)}&atch={code}";
+                byte[] buffer = Encoding.Default.GetBytes(str);
+                request.ContentLength = buffer.Length;
+                request.GetRequestStream().Write(buffer, 0, buffer.Length);
+                var response = (HttpWebResponse)request.GetResponse();
+                StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
+                string result = reader.ReadToEnd();
+                JieXi(result, type);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+        public string GetCookie(int type = 0)
+        {
+            var uri = new Uri($"http://{GetHost(type)}/cjcx/{Page[type]}.jsp");
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
             request.AllowAutoRedirect = true;
             request.Method = "get";
@@ -107,10 +128,10 @@ namespace ConsoleFX
             }
             return "";
         }
-        public string GetCode(string cc)
+        public string GetCode(string cc, int type = 0)
         {
             var stamp = (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000000;
-            string host = $"http://{GetHost()}/cjcx/img.jsp?timestamp=" + stamp;
+            string host = $"http://{GetHost(type)}/cjcx/img.jsp?timestamp=" + stamp;
 
             Encoding encoding = Encoding.Default;
             var request = (HttpWebRequest)WebRequest.Create(host);
