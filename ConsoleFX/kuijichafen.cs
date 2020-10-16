@@ -23,7 +23,7 @@ namespace ConsoleFX
         public string Host { get; set; }
         public string GetHost(int type)
         {
-           // if (type == 1)
+            // if (type == 1)
             {
                 return HostList[0];
             }
@@ -84,10 +84,14 @@ namespace ConsoleFX
                 Console.WriteLine(GetHost(type));
                 Thread.Sleep(1000);
                 var cc = GetCookie(type);
-               // cc =cc+";"+ GetCookie(type);
+                if (!cc.Contains("JSESSIONID"))
+                {
+                    cc = cc + ";" + GetCookie(type, cc);
+                }
+                // 
                 Thread.Sleep(1000);
                 var code = GetCode(cc, type);
-                Console.WriteLine("code"+code);
+                Console.WriteLine("code" + code);
                 for (var i = 0; i < 5; i++)
                 {
                     if (string.IsNullOrEmpty(code))
@@ -124,12 +128,19 @@ namespace ConsoleFX
                 Console.WriteLine(ex);
             }
         }
-        public string GetCookie(int type = 0)
+        public string GetCookie(int type = 0, string cc = "")
         {
+
             var uri = new Uri($"http://{GetHost(type)}/cjcx/{Page[type]}.jsp");
+
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
             request.AllowAutoRedirect = true;
             request.Method = "get";
+            if (!string.IsNullOrEmpty(cc))
+            {
+
+                request.Headers.Set("Cookie", cc);
+            }
             MakeCommonRequest(request);
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             response.GetResponseStream();
@@ -209,6 +220,7 @@ namespace ConsoleFX
                 var word = result1.GetValue("words_result");
                 var a = JsonConvert.DeserializeObject<List<Words>>(word.ToString());
                 var b = a.FirstOrDefault()?.words;
+                Console.WriteLine("百度验证码结果" + b);
                 b = CalcCode(b);
                 return b;
             }
@@ -235,18 +247,49 @@ namespace ConsoleFX
             var rego = new Regex("[+*-]", RegexOptions.IgnoreCase);
 
             var ots = rego.Matches(code);
-            if (ots.Count != 2)
-            {
-                return "";
-            }
+            string o1 = "";
+            string o2 = "";
 
+            if (ots.Count == 0)
+            {
+                o1 = o2 = "*";
+            }
+            if (ots.Count == 2)
+            {
+                o1 = ots[0].Value;
+                o2 = ots[1].Value;
+            }
             var first = int.Parse(mts[0].Value);
 
             var sec = int.Parse(mts[1].Value);
 
             var third = int.Parse(mts[2].Value);
-            int result = Calc(ots[0].Value, first, sec);
-            result = Calc(ots[1].Value, result, third);
+            if (ots.Count == 1)
+            {
+                if (array[0].Length > 1)
+                {
+                    o1 = "*";
+                    o2 = ots[0].Value;
+                }
+                else if (array[1].Length > 1)
+                {
+                    o1 = ots[0].Value;
+                    o2 = "*";
+                }
+            }
+            if (string.IsNullOrEmpty(o1) || string.IsNullOrEmpty(o2))
+            {
+                return "";
+            }
+            int result = 0;
+            if (o1 != "*" && o2 == "*")
+            {
+                result = Calc(o2, third, sec);
+                result = Calc(o1, first, result);
+                return result.ToString();
+            }
+            result = Calc(o1, first, sec);
+            result = Calc(o2, result, third);
             return result.ToString();
         }
         static int Calc(string opration, int i, int j)

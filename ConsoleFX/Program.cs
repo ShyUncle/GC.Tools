@@ -112,7 +112,7 @@ namespace ConsoleFX
                 //new kuijichafen().Get("522225197410140035", "李万全", "34");
                 //Thread.Sleep(1000);
                 new kuijichafen().Get("412829198802044488", "胡雪媛", "26", 1);
-                //new kuijichafen().Get("372930197711291882", "马绍玲", "25");
+               // new kuijichafen().Get("372930197711291882", "马绍玲", "25");
                 //Thread.Sleep(1000);
                 //new kuijichafen().Get("411424200002146246", "郑爽爽", "26");
                 //Thread.Sleep(1000);
