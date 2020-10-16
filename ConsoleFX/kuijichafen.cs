@@ -55,6 +55,7 @@ namespace ConsoleFX
             if (headNode == null || string.IsNullOrEmpty(headNode.InnerText))
             {
                 Console.WriteLine("错误");
+                return;
             }
             //获得title标签中的内容
             string title = headNode.InnerText;
@@ -83,13 +84,17 @@ namespace ConsoleFX
                 Console.WriteLine(GetHost(type));
                 Thread.Sleep(1000);
                 var cc = GetCookie(type);
+               // cc =cc+";"+ GetCookie(type);
                 Thread.Sleep(1000);
                 var code = GetCode(cc, type);
                 Console.WriteLine("code"+code);
-                if (string.IsNullOrEmpty(code))
+                for (var i = 0; i < 5; i++)
                 {
-                    Thread.Sleep(1000);
-                    code = GetCode(cc, type);
+                    if (string.IsNullOrEmpty(code))
+                    {
+                        Thread.Sleep(1000);
+                        code = GetCode(cc, type);
+                    }
                 }
                 if (string.IsNullOrEmpty(code))
                 {
@@ -123,7 +128,7 @@ namespace ConsoleFX
         {
             var uri = new Uri($"http://{GetHost(type)}/cjcx/{Page[type]}.jsp");
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
-            request.AllowAutoRedirect = false;
+            request.AllowAutoRedirect = true;
             request.Method = "get";
             MakeCommonRequest(request);
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -153,8 +158,10 @@ namespace ConsoleFX
 
 
             var img = Image.FromStream(stream) as Bitmap;
+            img.Save("yuan.jpg");
             var newimg = kuijichafen.deleteBorder(kuijichafen.colorClear(kuijichafen.CorlorGray(img)), 1);
             var b = kuijichafen.blackClear(kuijichafen.Threshoding(newimg, 120), 1, 8);
+            b.Save("xin.jpg");
             var ste = new MemoryStream();
             b.Save(ste, ImageFormat.Jpeg);
             ste.Seek(0, SeekOrigin.Begin);
