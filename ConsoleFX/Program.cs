@@ -35,6 +35,30 @@ namespace ConsoleFX
         }
         static void Main(string[] args)
         {
+            //while (true)
+            //{
+            //    try
+            //    {
+            //        var path = Console.ReadLine();
+            //        var img = Bitmap.FromFile(path) as Bitmap;
+            //        var newimg = kuijichafen.deleteBorder(kuijichafen.colorClear(kuijichafen.CorlorGray(img)), 1);
+            //        var b = kuijichafen.blackClear(kuijichafen.Threshoding(newimg, 120), 1, 8);
+            //        var ste = new MemoryStream();
+            //        b.Save(ste, ImageFormat.Jpeg);
+            //        ste.Seek(0, SeekOrigin.Begin);
+            //        byte[] arr = kuijichafen.ReadFully(ste);
+            //        var code = kuijichafen.RecognitionImage(arr);
+
+            //        Console.WriteLine(code);
+            //        code = kuijichafen.CalcCode(code);
+            //        Console.WriteLine(code);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Console.WriteLine("不成功");
+            //    }
+            //}
+            //return;
             #region 生成激活码
             //    List<string> codes = new List<string>();
             //    int count = 0;
@@ -84,7 +108,7 @@ namespace ConsoleFX
             //  new kuijichafen().JieXi(File.ReadAllText("C:/Users/admin/Desktop/全国会计资格评价网.html"));
 
             while (true)
-            {  
+            {
                 new kuijichafen().Get("522225197410140035", "李万全", "34");
                 Thread.Sleep(1000);
                 new kuijichafen().Get("412829198802044488", "胡雪媛", "26", 1);
@@ -92,7 +116,7 @@ namespace ConsoleFX
                 Thread.Sleep(1000);
                 new kuijichafen().Get("411424200002146246", "郑爽爽", "26");
                 Thread.Sleep(1000);
-          
+
                 Console.ReadLine();
             }
             // RecognitionImage();
