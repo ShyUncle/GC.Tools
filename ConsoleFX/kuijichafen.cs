@@ -68,7 +68,7 @@ namespace ConsoleFX
                 Console.WriteLine(b[0].Trim() + ":" + b[1].Trim());
             }
             HtmlNode tableNode = doc.DocumentNode.SelectSingleNode("//table[@class='cjcx_jg']");
-            var tds = tableNode.SelectNodes("//tr[@bgcolor='#FFFFFF']");
+            var tds = tableNode.SelectNodes("./tr[@bgcolor='#FFFFFF']");
             foreach (var item in tds)
             {
                 var td = item.SelectNodes("./td");
@@ -77,19 +77,30 @@ namespace ConsoleFX
             //tds = tableNode.SelectNodes("child::tr[4]/td");
             //Console.WriteLine(tds[0].InnerText + ":" + tds[1].InnerText.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace(" ", ""));
         }
+       static  string cookie = "";
         public void Get(string idcard, string name, string provinceId, int type = 0)
         {
             try
             {
                 Console.WriteLine(GetHost(type));
                 Thread.Sleep(1000);
-                var cc = GetCookie(type);
-                if (!cc.Contains("JSESSIONID"))
+                string cc = "";
+                if (!string.IsNullOrEmpty(cookie))
                 {
-                    cc = cc + ";" + GetCookie(type, cc);
+                    cc = cookie;
+                }
+                else
+                {
+                    cc = GetCookie(type);
+                    if (!cc.Contains("JSESSIONID"))
+                    {
+                        cc = cc + ";" + GetCookie(type, cc);
+                    }
+                    cookie = cc; 
+                    Thread.Sleep(1000);
                 }
                 // 
-                Thread.Sleep(1000);
+              
                 var code = GetCode(cc, type);
                 Console.WriteLine("code" + code);
                 for (var i = 0; i < 5; i++)
@@ -163,6 +174,7 @@ namespace ConsoleFX
             request.Method = "get";
             request.Headers.Set("Cookie", cc);
             MakeCommonRequest(request);
+            request.Timeout = 20000;
             var response = (HttpWebResponse)request.GetResponse();
 
             var stream = response.GetResponseStream();

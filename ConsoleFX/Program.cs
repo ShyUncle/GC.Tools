@@ -105,8 +105,8 @@ namespace ConsoleFX
             //    Console.WriteLine($"{codes.Count}重复总次数{count}");
             #endregion
 
-            //  new kuijichafen().JieXi(File.ReadAllText("C:/Users/admin/Desktop/全国会计资格评价网.html"));
-
+              //new kuijichafen().JieXi(File.ReadAllText("C:/Users/admin/Desktop/全国会计资格评价网.html"));
+             
             while (true)
             {
                 //new kuijichafen().Get("522225197410140035", "李万全", "34");
