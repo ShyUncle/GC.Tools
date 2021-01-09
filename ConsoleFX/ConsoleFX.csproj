@@ -62,7 +62,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaiduAiTest.cs" />
     <Compile Include="BaseConversionHelper.cs" />
+    <Compile Include="CancelTaskTest.cs" />
     <Compile Include="FFMPEG.cs" />
     <Compile Include="ImageHelper.cs" />
     <Compile Include="kuijichafen.cs" />

@@ -16,198 +16,47 @@ using System.Threading;
 namespace ConsoleFX
 {
     class Program
-    {  // 10进制转换成36进制
-        public static string int10Convert36(int i)
-        {
-
-            string str = "";
-            while (i > 35)
-            {
-                int j = i % 36;
-                str += ((j <= 9) ? Convert.ToChar(j + '0') : Convert.ToChar(j - 10 + 'A'));
-                i = i / 36;
-            }
-            str += ((i <= 9) ? Convert.ToChar(i + '0') : Convert.ToChar(i - 10 + 'A'));
-
-            Char[] c = str.ToCharArray();
-            Array.Reverse(c);
-            return new string(c);
-        }
+    {    
         static void Main(string[] args)
         {
-            //while (true)
-            //{
-            //    try
-            //    {
-            //        var path = Console.ReadLine();
-            //        var img = Bitmap.FromFile(path) as Bitmap;
-            //        var newimg = kuijichafen.deleteBorder(kuijichafen.colorClear(kuijichafen.CorlorGray(img)), 1);
-            //        var b = kuijichafen.blackClear(kuijichafen.Threshoding(newimg, 120), 1, 8);
-            //        var ste = new MemoryStream();
-            //        b.Save(ste, ImageFormat.Jpeg);
-            //        ste.Seek(0, SeekOrigin.Begin);
-            //        byte[] arr = kuijichafen.ReadFully(ste);
-            //        var code = kuijichafen.RecognitionImage(arr);
-
-            //        Console.WriteLine(code);
-            //        code = kuijichafen.CalcCode(code);
-            //        Console.WriteLine(code);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Console.WriteLine("不成功");
-            //    }
-            //}
-            //return;
-            #region 生成激活码
-            //    List<string> codes = new List<string>();
-            //    int count = 0;
-            //    while (codes.Count <500)
-            //    {
-            //        byte[] buffer = Encoding.UTF8.GetBytes(Guid.NewGuid().ToString("N"));
-
-            //        var s = BitConverter.ToInt64(buffer, 0);
-            //        var re = new BaseConversionHelper().SixtyTwoScale(Convert.ToInt64(s));
-
-            //        if (codes.Contains(re))
-            //        {
-            //            ConsoleColor currentForeColor = Console.ForegroundColor;
-            //            Console.ForegroundColor = ConsoleColor.Red;
-            //            count++;
-            //            Console.WriteLine($"{s}重复{re},重复总次数{count}");
-            //            Console.ForegroundColor = currentForeColor;
-            //        }
-            //        else
-            //            codes.Add(re);
-            //        Console.WriteLine($"原值{s}新值{re}");
-            //    }
-            //    Console.WriteLine($"{codes.Count}重复总次数{count}");
-            //    count = 0;
-            //    while (codes.Count < 2000)
-            //    {
-            //        byte[] buffer = Encoding.UTF8.GetBytes(Guid.NewGuid().ToString("N"));
-
-            //        var s = BitConverter.ToInt32(buffer, 0); 
-            //        var re = new BaseConversionHelper().SixtyTwoScale(Convert.ToInt64(s));
-
-            //        if (codes.Contains(re))
-            //        {
-            //            ConsoleColor currentForeColor = Console.ForegroundColor;
-            //            Console.ForegroundColor = ConsoleColor.Red;
-            //            count++;
-            //            Console.WriteLine($"{s}重复{re},重复总次数{count}");
-            //            Console.ForegroundColor = currentForeColor;
-            //        }
-            //        else
-            //            codes.Add(re);
-            //        Console.WriteLine($"原值{s}新值{re}");
-            //    }
-            //    Console.WriteLine($"{codes.Count}重复总次数{count}");
-            #endregion
-
-              //new kuijichafen().JieXi(File.ReadAllText("C:/Users/admin/Desktop/全国会计资格评价网.html"));
-             
-            while (true)
-            {
-                //new kuijichafen().Get("522225197410140035", "李万全", "34");
-                //Thread.Sleep(1000);
-                new kuijichafen().Get("412829198802044488", "胡雪媛", "26", 1);
-               // new kuijichafen().Get("372930197711291882", "马绍玲", "25");
-                //Thread.Sleep(1000);
-                //new kuijichafen().Get("411424200002146246", "郑爽爽", "26");
-                //Thread.Sleep(1000);
-
-                Console.ReadLine();
-            }
-            // RecognitionImage();
-            //   SimilarSearchDemo();
-            // SameHqSearchDemo();
+            new Bandiangou().WangWang();
             Console.ReadLine();
         }
-        public static void SameHqSearchDemo()
-        {  // 设置APPID/AK/SK
-            var APP_ID = "21420045";
-            var API_KEY = "YdWwajRotuPVdCMc35qB1U7S";
-            var SECRET_KEY = "ePIaisz22vZungzdCaIuOumYKiVYObME";
 
-            var client = new Baidu.Aip.ImageSearch.ImageSearch(API_KEY, SECRET_KEY);
-            client.Timeout = 60000;  // 修改超时时间
-            var image = File.ReadAllBytes(@"C:\Users\admin\Desktop\微信图片_20200716163059.jpg");
-            // 调用相同图检索—检索, 图片参数为本地图片，可能会抛出网络等异常，请使用try/catch捕获
-            var result = client.SameHqSearch(image);
-            Console.WriteLine(result);
-            // 如果有可选参数
-            var options = new Dictionary<string, object>{
-
-        {"pn", "0"},
-        {"rn", "250"}
-    };
-            // 带参数调用相同图检索—检索, 图片参数为本地图片
-            result = client.SameHqSearch(image, options);
-            Console.WriteLine(result);
-        }
-        /// <summary>
-        /// 文字识别
-        /// </summary>
-        static void RecognitionImage()
+        public class Animal
         {
-            // 设置APPID/AK/SK
-            var APP_ID = "21512957";
-            var API_KEY = "OFez8onF6CqQ8khtNnecrWGD";
-            var SECRET_KEY = "2aAt05myciGn6DvGPGLAL8LQ5v4kMm56";
-
-            var client = new Baidu.Aip.Ocr.Ocr(API_KEY, SECRET_KEY);
-            client.Timeout = 60000;  // 修改超时时间
-            var url = "https://ai.bdstatic.com/file/3986A65C9EDA45AF8877DD42D5256403";
-
-            //        // 调用通用文字识别, 图片参数为远程url图片，可能会抛出网络等异常，请使用try/catch捕获
-            //        var result = client.GeneralBasicUrl(url);
-            //        Console.WriteLine(result);
-            //        // 如果有可选参数
-            var options = new Dictionary<string, object>{
-        {"language_type", "CHN_ENG"},
-        {"detect_direction", "true"},
-        {"detect_language", "true"},
-        {"probability", "true"}
-    };
-            //        // 带参数调用通用文字识别, 图片参数为远程url图片
-            //        result = client.GeneralBasicUrl(url, options);
-            //        Console.WriteLine(result);
-
-            var image = File.ReadAllBytes(@"C:\Users\admin\Desktop\微信图片_20200930104921.png");
-            // 调用通用文字识别, 图片参数为本地图片，可能会抛出网络等异常，请使用try/catch捕获
-            var result1 = client.GeneralBasic(image);
-            Console.WriteLine(result1);
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
-            // 带参数调用通用文字识别, 图片参数为本地图片
-            var result = client.GeneralBasic(image, options);
-            Console.WriteLine(result);
-        }
-        public static void SimilarSearchDemo()
-        {   // 设置APPID/AK/SK
-            var APP_ID = "21420045";
-            var API_KEY = "YdWwajRotuPVdCMc35qB1U7S";
-            var SECRET_KEY = "ePIaisz22vZungzdCaIuOumYKiVYObME";
-
-            var client = new Baidu.Aip.ImageSearch.ImageSearch(API_KEY, SECRET_KEY);
-            client.Timeout = 60000;  // 修改超时时间
-            var image = File.ReadAllBytes(@"C:\Users\admin\Desktop\微信图片_20200716163059.jpg");
-            // 调用相似图检索—检索, 图片参数为本地图片，可能会抛出网络等异常，请使用try/catch捕获
-            var result = client.SimilarSearch(image);
-            Console.WriteLine(result);
-            // 如果有可选参数
-            var options = new Dictionary<string, object>{
-
-        {"pn", "0"},
-        {"rn", "1"}
-    };
-            // 带参数调用相似图检索—检索, 图片参数为本地图片
-            result = client.SimilarSearch(image, options);
-            Console.WriteLine(result);
+            public virtual void J()
+            {
+                Console.WriteLine("叫一声");
+            }
+            public void WangWang()
+            {
+                J();
+            }
         }
 
+        public class Dog : Animal
+        {
+            public override void J()
+            {
+                Console.WriteLine("狗叫");
+            }
+        }
+        public class Bandiangou:Dog
+        {
+          
+        }
+
+        #region 取消线程测试
+        static void CancelTask()
+        {
+          var task=  CancelTaskTest.Start();
+            Thread.Sleep(30000);
+            CancelTaskTest.Stop(); 
+        }
+        #endregion
+
+        #region 二维码定位
         /// <summary>
         /// 会产生graphics异常的PixelFormat
         /// </summary>
@@ -324,10 +173,7 @@ PixelFormat.Format8bppIndexed
             }
         }
 
-        static Point[] GetMinPoint(ResultPoint[] resultPoints)
-        {
-            return null;
-        }
+       
         /// <summary>
         /// 截取图片区域，返回所截取的图片
         /// </summary>
@@ -415,7 +261,9 @@ PixelFormat.Format8bppIndexed
             }
             return spOriginData;
         }
+        #endregion
 
+        #region 图片压缩
         static void Test()
         {
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create("http://localhost:9999/store/PayQrCode?orderId=24&payMethod=2");
@@ -431,5 +279,7 @@ PixelFormat.Format8bppIndexed
 
             ImageHelper.CompressImage(AppDomain.CurrentDomain.BaseDirectory + "\\.net core学习路线图.png", AppDomain.CurrentDomain.BaseDirectory + "\\a.png");
         }
+
+        #endregion
     }
 }
