@@ -12,13 +12,22 @@ namespace CoreApi.Controllers
     public class JWTController : ControllerBase
     {
         [HttpGet]
-        public string Get()
+        public async Task<string> Get()
         {
+            var lo = new System.Threading.ThreadLocal<int>();
+            lo.Value = 1;
             var c = new AsyncTest();
             c.Current = new testDate();
-            System.Threading.Thread.Sleep(20000);
+            var s = c.Current.date.ToString();
+
+            var da = Task.Factory.StartNew(() =>
+          {
+              System.Threading.Thread.Sleep(10000);
+              var aad = new AsyncTest();
+              return aad.Current.date.ToString();
+          });
             c = new AsyncTest();
-            return c.Current.date.ToString();
+            return s + ":" ;
         }
     }
     [Route("api/[controller]")]
@@ -41,7 +50,7 @@ namespace CoreApi.Controllers
         public string Get()
         {
             var c = new AsyncTest();
-          
+
             return c.Current.date.ToString();
         }
     }

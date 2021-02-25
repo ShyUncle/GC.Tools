@@ -16,7 +16,7 @@ namespace CoreApi.Controllers
     }
     public class AsyncTest
     {
-        private static readonly AsyncLocal<testDate> CurentScope=new AsyncLocal<testDate>();
+        private  readonly AsyncLocal<testDate> CurentScope=new AsyncLocal<testDate>();
         public AsyncTest()
         {
             
