@@ -11,7 +11,7 @@ using ZXing.Common;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Diagnostics;
-using System.Threading;
+using System.Threading; 
 
 namespace ConsoleFX
 {
@@ -19,7 +19,17 @@ namespace ConsoleFX
     {    
         static void Main(string[] args)
         {
-            new Bandiangou().WangWang();
+            iTextSharp.text.Document ManagementReportDoc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, 15f, 15f, 75f, 75f);
+
+            FileStream file = new FileStream( "E://"   + DateTime.Now.ToString("dd-MMMM-yy") + ".pdf", System.IO.FileMode.OpenOrCreate);
+
+            iTextSharp.text.pdf.PdfWriter writer = iTextSharp.text.pdf.PdfWriter.GetInstance(ManagementReportDoc, file); // PdfWriter.GetInstance(ManagementReportDoc, file);
+
+            ManagementReportDoc.Open();
+            // step 4 将一个元素添加到文档中
+            ManagementReportDoc.Add(new iTextSharp.text.Paragraph("Hello World!"));
+            // step 5 关闭文档 
+            ManagementReportDoc.Close();
             Console.ReadLine();
         }
 
