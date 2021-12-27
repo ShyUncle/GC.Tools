@@ -85,6 +85,8 @@
     <Content Include=".net core学习路线图.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="0.png" />
+    <Content Include="2021128104827556490716.png" />
     <Content Include="e92bda7fa55c4f41a8e3dc65ce56755f.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

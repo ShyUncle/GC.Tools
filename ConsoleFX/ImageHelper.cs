@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleFX
 {
-   public class ImageHelper
+    public class ImageHelper
     {
         /// <summary>
         /// 无损压缩图片
@@ -114,6 +114,42 @@ namespace ConsoleFX
             }
         }
 
+
+        public static Image PosterHandle()
+        {
+            var bgImg = new Bitmap("2021128104827556490716.png");
+
+            using (Graphics g = Graphics.FromImage(bgImg))
+            {
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                Bitmap qrimg = null;
+                var tempQr = new Bitmap(72, 72);
+                qrimg = new Bitmap("0.png");
+                if (qrimg != null)
+                {
+
+
+                    using (Graphics tempG = Graphics.FromImage(tempQr))
+                    {
+                        tempG.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                        //指定抗锯齿
+                        tempG.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                        //指定高质量的双线性插值法。 执行预筛选以确保高质量的收缩
+                        tempG.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+
+                        tempG.DrawImage(qrimg, new Rectangle(0, 0, 72, 72), new Rectangle(0, 0, qrimg.Width, qrimg.Height), GraphicsUnit.Pixel);
+                    } 
+                }
+               // tempQr.Save("s.png");
+                var point = new Point(287, 950);
+              // g.DrawImage(tempQr, point);
+               g.DrawImage(qrimg, 287, 950, 450, 450);
+
+            }
+            return bgImg;
+        }
     }
 
 }

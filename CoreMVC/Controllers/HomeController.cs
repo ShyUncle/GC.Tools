@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CoreMVC.Models;
-
+using Microsoft.AspNetCore.Http;
 namespace CoreMVC.Controllers
 {
     public class HomeController : Controller
@@ -20,11 +20,14 @@ namespace CoreMVC.Controllers
 
         public IActionResult Index()
         {
+            HttpContext.Session.Remove("testKey");
+            HttpContext.Session.SetString("testKey", "testvalue");
             return View();
         }
 
         public IActionResult Privacy()
         {
+            var value = HttpContext.Session.GetString("testKey");
             return View();
         }
 
