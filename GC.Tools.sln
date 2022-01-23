@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29509.3
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GC.Tools.NPOITest", "GC.Tools.NPOITest\GC.Tools.NPOITest.csproj", "{EC8D087C-3A38-4E9F-8EC0-AFF1ACCE4930}"
 EndProject
@@ -44,6 +44,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnowFlakeTest", "SnowFlakeTest\SnowFlakeTest.csproj", "{8DBB5A89-2251-4290-A2CD-0CB3B1307FB0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{D2CA3A5D-5F93-4A14-9407-04353491C250}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selenium", "Selenium\Selenium.csproj", "{1267BCE5-2D33-4A64-B25A-DDB5BA248213}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -135,6 +137,10 @@ Global
 		{D2CA3A5D-5F93-4A14-9407-04353491C250}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2CA3A5D-5F93-4A14-9407-04353491C250}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2CA3A5D-5F93-4A14-9407-04353491C250}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1267BCE5-2D33-4A64-B25A-DDB5BA248213}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1267BCE5-2D33-4A64-B25A-DDB5BA248213}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1267BCE5-2D33-4A64-B25A-DDB5BA248213}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1267BCE5-2D33-4A64-B25A-DDB5BA248213}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
