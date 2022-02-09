@@ -45,7 +45,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnowFlakeTest", "SnowFlakeT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{D2CA3A5D-5F93-4A14-9407-04353491C250}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selenium", "Selenium\Selenium.csproj", "{1267BCE5-2D33-4A64-B25A-DDB5BA248213}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Selenium", "Selenium\Selenium.csproj", "{1267BCE5-2D33-4A64-B25A-DDB5BA248213}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DnsHiJacking", "DnsHiJacking\DnsHiJacking.csproj", "{ED7AB351-41A4-449C-B886-BDE7EB9E0F5F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DnsHiJacking.Host", "DnsHiJacking.Host\DnsHiJacking.Host.csproj", "{6EE1BF98-87C6-4145-A09D-822539FC4643}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DnsHiJacking.Server", "DnsHiJacking.Server\DnsHiJacking.Server.csproj", "{E60EE9FF-1657-4771-92A3-CD5DEDD2D2BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -141,6 +147,18 @@ Global
 		{1267BCE5-2D33-4A64-B25A-DDB5BA248213}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1267BCE5-2D33-4A64-B25A-DDB5BA248213}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1267BCE5-2D33-4A64-B25A-DDB5BA248213}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED7AB351-41A4-449C-B886-BDE7EB9E0F5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED7AB351-41A4-449C-B886-BDE7EB9E0F5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED7AB351-41A4-449C-B886-BDE7EB9E0F5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED7AB351-41A4-449C-B886-BDE7EB9E0F5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EE1BF98-87C6-4145-A09D-822539FC4643}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EE1BF98-87C6-4145-A09D-822539FC4643}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EE1BF98-87C6-4145-A09D-822539FC4643}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EE1BF98-87C6-4145-A09D-822539FC4643}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E60EE9FF-1657-4771-92A3-CD5DEDD2D2BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E60EE9FF-1657-4771-92A3-CD5DEDD2D2BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E60EE9FF-1657-4771-92A3-CD5DEDD2D2BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E60EE9FF-1657-4771-92A3-CD5DEDD2D2BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
