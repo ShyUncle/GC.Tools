@@ -12,25 +12,52 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Diagnostics;
 using System.Threading;
+using System.Reflection;
+using iTextSharp.text.pdf;
 
-namespace ConsoleFX
+namespace CL.Utility
 {
     class Program
     {
         static void Main(string[] args)
         {
-            ImageHelper.PosterHandle().Save("merged.png");
-            //iTextSharp.text.Document ManagementReportDoc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, 15f, 15f, 75f, 75f);
+
+
+            var sourcepath = System.Web.Hosting.HostingEnvironment.ApplicationPhysicalPath;
+            //PDF模板路径
+            string loadpath = "E:\\download" + "/New_Blank_Document.pdf";
+            //PDF文件输出路径
+            string outpath = "E:\\download" + "/oupput.pdf";
+
+
+            //加载模板
+            PdfReader reader = new PdfReader(loadpath);
+            //文件输出流
+            FileStream fFileStream = new FileStream(outpath, FileMode.Create);
+
+            //进行PDF字段操作
+            PdfStamper stamper = new PdfStamper(reader, fFileStream);
+            AcroFields form = stamper.AcroFields;
+            //填充PDF里的字段内容
+            stamper.Writer.CloseStream = false;
+            form.SetField("name", "a");
+
+            //设置不可编辑
+            stamper.FormFlattening = true;
+            stamper.Close();
+
+            iTextSharp.text.Document ManagementReportDoc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, 15f, 15f, 75f, 75f);
 
             //FileStream file = new FileStream( "E://"   + DateTime.Now.ToString("dd-MMMM-yy") + ".pdf", System.IO.FileMode.OpenOrCreate);
 
-            //iTextSharp.text.pdf.PdfWriter writer = iTextSharp.text.pdf.PdfWriter.GetInstance(ManagementReportDoc, file); // PdfWriter.GetInstance(ManagementReportDoc, file);
+            iTextSharp.text.pdf.PdfWriter writer = iTextSharp.text.pdf.PdfWriter.GetInstance(ManagementReportDoc, fFileStream); // PdfWriter.GetInstance(ManagementReportDoc, file);
 
-            //ManagementReportDoc.Open();
+            ManagementReportDoc.Open();
             //// step 4 将一个元素添加到文档中
-            //ManagementReportDoc.Add(new iTextSharp.text.Paragraph("Hello World!"));
+            ManagementReportDoc.Add(new iTextSharp.text.Paragraph("Hello World!"));
             //// step 5 关闭文档 
-            //ManagementReportDoc.Close();
+            ManagementReportDoc.Close();
+            Console.WriteLine("ok");
             Console.ReadLine();
         }
 
@@ -59,12 +86,7 @@ namespace ConsoleFX
         }
 
         #region 取消线程测试
-        static void CancelTask()
-        {
-            var task = CancelTaskTest.Start();
-            Thread.Sleep(30000);
-            CancelTaskTest.Stop();
-        }
+
         #endregion
 
         #region 二维码定位
@@ -275,21 +297,6 @@ PixelFormat.Format8bppIndexed
         #endregion
 
         #region 图片压缩
-        static void Test()
-        {
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create("http://localhost:9999/store/PayQrCode?orderId=24&payMethod=2");
-            request.Method = "Get";
-            using (var stream = request.GetResponse().GetResponseStream())
-            {
-                using (FileStream file = new FileStream("abc.png", FileMode.Create))
-                {
-                    stream.CopyTo(file);
-                    file.Flush();
-                }
-            }
-
-            ImageHelper.CompressImage(AppDomain.CurrentDomain.BaseDirectory + "\\.net core学习路线图.png", AppDomain.CurrentDomain.BaseDirectory + "\\a.png");
-        }
 
         #endregion
     }

@@ -72,6 +72,7 @@ namespace DnsHiJacking
 
             cancellationToken.Register(hwnd =>
             {
+                Console.WriteLine("dns拦截器停止");
                 WinDivert.WinDivertClose((IntPtr)hwnd!);
                 DnsFlushResolverCache();
             }, handle);

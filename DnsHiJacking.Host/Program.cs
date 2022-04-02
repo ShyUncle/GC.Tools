@@ -1,3 +1,4 @@
+using DnsHiJacking;
 using DnsHiJacking.Host;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
@@ -59,7 +60,7 @@ static IEnumerable<string> GetDomains(string? domain)
     yield return IPAddress.Loopback.ToString();
     yield return IPAddress.IPv6Loopback.ToString();
 }
-
+builder.Services.AddHostedService<DnsInterceptHostedService>();
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddHttpForwarder();
@@ -86,7 +87,7 @@ void HandleMapTest1(IApplicationBuilder app)
     {
         var scheme = context.Request.Scheme;
         var host = context.Request.Host;
-        var destinationPrefix = $"{scheme}://{host}/"; 
+        var destinationPrefix = $"{scheme}://{host}/";
         IHttpForwarder httpForwarder = context.RequestServices.GetRequiredService<IHttpForwarder>();
         var httpClient = new HttpMessageInvoker(new SocketsHttpHandler()
 

@@ -51,7 +51,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DnsHiJacking", "DnsHiJackin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DnsHiJacking.Host", "DnsHiJacking.Host\DnsHiJacking.Host.csproj", "{6EE1BF98-87C6-4145-A09D-822539FC4643}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DnsHiJacking.Server", "DnsHiJacking.Server\DnsHiJacking.Server.csproj", "{E60EE9FF-1657-4771-92A3-CD5DEDD2D2BD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Irony", "Irony\Irony.csproj", "{9758A3CC-FB31-4B81-A4DF-59061D8870C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -155,10 +155,10 @@ Global
 		{6EE1BF98-87C6-4145-A09D-822539FC4643}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6EE1BF98-87C6-4145-A09D-822539FC4643}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6EE1BF98-87C6-4145-A09D-822539FC4643}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E60EE9FF-1657-4771-92A3-CD5DEDD2D2BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E60EE9FF-1657-4771-92A3-CD5DEDD2D2BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E60EE9FF-1657-4771-92A3-CD5DEDD2D2BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E60EE9FF-1657-4771-92A3-CD5DEDD2D2BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9758A3CC-FB31-4B81-A4DF-59061D8870C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9758A3CC-FB31-4B81-A4DF-59061D8870C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9758A3CC-FB31-4B81-A4DF-59061D8870C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9758A3CC-FB31-4B81-A4DF-59061D8870C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
