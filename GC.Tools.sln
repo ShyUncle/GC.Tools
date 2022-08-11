@@ -51,7 +51,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DnsHiJacking", "DnsHiJackin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DnsHiJacking.Host", "DnsHiJacking.Host\DnsHiJacking.Host.csproj", "{6EE1BF98-87C6-4145-A09D-822539FC4643}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rock.SqlParser.Irony", "Rock.SqlParser.Irony\Rock.SqlParser.Irony.csproj", "{6C818318-2CB1-43D8-BD52-E7F54FA1D111}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rock.EntityFramework", "Rock.EntityFramework\Rock.EntityFramework.csproj", "{079113B8-E97F-4E2A-99FB-A4BA67F8D0E9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rock.Test", "Rock.Test\Rock.Test.csproj", "{3B49CA24-F034-49E0-AC19-18DBAE14A900}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rock.SqlParser.SqlServer", "Rock.SqlParser.SqlServer\Rock.SqlParser.SqlServer.csproj", "{C9331A28-6B13-4F5B-AE50-230A254DB549}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rock.WebApiTest", "Rock.WebApiTest\Rock.WebApiTest.csproj", "{36862ABA-E441-4574-8448-8115448359DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -155,10 +161,22 @@ Global
 		{6EE1BF98-87C6-4145-A09D-822539FC4643}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6EE1BF98-87C6-4145-A09D-822539FC4643}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6EE1BF98-87C6-4145-A09D-822539FC4643}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6C818318-2CB1-43D8-BD52-E7F54FA1D111}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6C818318-2CB1-43D8-BD52-E7F54FA1D111}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6C818318-2CB1-43D8-BD52-E7F54FA1D111}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6C818318-2CB1-43D8-BD52-E7F54FA1D111}.Release|Any CPU.Build.0 = Release|Any CPU
+		{079113B8-E97F-4E2A-99FB-A4BA67F8D0E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{079113B8-E97F-4E2A-99FB-A4BA67F8D0E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{079113B8-E97F-4E2A-99FB-A4BA67F8D0E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{079113B8-E97F-4E2A-99FB-A4BA67F8D0E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B49CA24-F034-49E0-AC19-18DBAE14A900}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B49CA24-F034-49E0-AC19-18DBAE14A900}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B49CA24-F034-49E0-AC19-18DBAE14A900}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B49CA24-F034-49E0-AC19-18DBAE14A900}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9331A28-6B13-4F5B-AE50-230A254DB549}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9331A28-6B13-4F5B-AE50-230A254DB549}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9331A28-6B13-4F5B-AE50-230A254DB549}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9331A28-6B13-4F5B-AE50-230A254DB549}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36862ABA-E441-4574-8448-8115448359DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36862ABA-E441-4574-8448-8115448359DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36862ABA-E441-4574-8448-8115448359DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36862ABA-E441-4574-8448-8115448359DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

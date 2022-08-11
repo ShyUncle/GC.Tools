@@ -1,11 +1,5 @@
 ﻿using Irony.Parsing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Rock.SqlParser.Irony
+namespace Rock.SqlParser.SqlServer
 {
     [Language("SqlServer", "1.0", "A SQL Sample")]
     public class SqlServerGrammar : Grammar
@@ -120,6 +114,7 @@ namespace Rock.SqlParser.Irony
             var funArgs = new NonTerminal("funArgs");
             var inStmt = new NonTerminal("inStmt");
 
+            var selectTableAs = new NonTerminal("selectTableAs");
             //BNF Rules
             this.Root = stmtList;
             stmtLine.Rule = stmt + semiOpt;
@@ -149,7 +144,7 @@ namespace Rock.SqlParser.Irony
             constraintTypeOpt.Rule = PRIMARY + KEY + idlistPar | UNIQUE + idlistPar | NOT + NULL + idlistPar
                                    | "Foreign" + KEY + idlistPar + "References" + Id + idlistPar;
             idlistPar.Rule = "(" + idlist + ")";
-            idlist.Rule = MakePlusRule(idlist, comma, Id);
+            idlist.Rule = MakePlusRule(idlist, comma, Id) | Id + selectTableAs;
 
             //Create Index
             createIndexStmt.Rule = CREATE + uniqueOpt + INDEX + Id + ON + Id + orderList + withClauseOpt;
@@ -182,17 +177,20 @@ namespace Rock.SqlParser.Irony
 
             //Delete stmt
             deleteStmt.Rule = DELETE + FROM + Id + whereClauseOpt;
-
+            selectTableAs.Rule = Empty | asOpt + Id;
             //Select stmt
             selectStmt.Rule = SELECT + selRestrOpt + selList + intoClauseOpt + fromClauseOpt + whereClauseOpt +
                               groupClauseOpt + havingClauseOpt + orderClauseOpt;
             selRestrOpt.Rule = Empty | "ALL" | "DISTINCT";
             selList.Rule = columnItemList | "*";
+            var preTi = new NonTerminal("preTi");
+            
+            preTi.Rule = Empty | string_literal + dot + Id;
             columnItemList.Rule = MakePlusRule(columnItemList, comma, columnItem);
             columnItem.Rule = columnSource + aliasOpt;
             aliasOpt.Rule = Empty | asOpt + Id;
             asOpt.Rule = Empty | AS;
-            columnSource.Rule = aggregate | Id;
+            columnSource.Rule = aggregate | Id | preTi;
             aggregate.Rule = aggregateName + "(" + aggregateArg + ")";
             aggregateArg.Rule = expression | "*";
             aggregateName.Rule = COUNT | "Avg" | "Min" | "Max" | "StDev" | "StDevP" | "Sum" | "Var" | "VarP";
