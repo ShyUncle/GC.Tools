@@ -29,8 +29,7 @@ namespace WechatPayTest.Controllers
             var client = new WechatTenpayClient(_tenpayClientOptions);
             var result = await client.ExecuteCreateEcommerceApplymentAsync(new SKIT.FlurlHttpClient.Wechat.TenpayV3.Models.CreateEcommerceApplymentRequest() {
               
-            });
-            client.PlatformCertificateManager.AddEntry
+            }); 
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),

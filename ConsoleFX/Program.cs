@@ -13,7 +13,14 @@ using System.Drawing.Imaging;
 using System.Diagnostics;
 using System.Threading;
 using System.Reflection;
+using ConsoleFX;
 using iTextSharp.text.pdf;
+using iTextSharp.text.pdf.parser;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+using Newtonsoft.Json;
+using static CL.Utility.Program;
+using iText.Kernel.Geom;
 
 namespace CL.Utility
 {
@@ -21,283 +28,444 @@ namespace CL.Utility
     {
         static void Main(string[] args)
         {
-
-
-            var sourcepath = System.Web.Hosting.HostingEnvironment.ApplicationPhysicalPath;
-            //PDF模板路径
-            string loadpath = "E:\\download" + "/New_Blank_Document.pdf";
-            //PDF文件输出路径
-            string outpath = "E:\\download" + "/oupput.pdf";
-
-
-            //加载模板
-            PdfReader reader = new PdfReader(loadpath);
-            //文件输出流
-            FileStream fFileStream = new FileStream(outpath, FileMode.Create);
-
-            //进行PDF字段操作
-            PdfStamper stamper = new PdfStamper(reader, fFileStream);
-            AcroFields form = stamper.AcroFields;
-            //填充PDF里的字段内容
-            stamper.Writer.CloseStream = false;
-            form.SetField("name", "a");
-
-            //设置不可编辑
-            stamper.FormFlattening = true;
-            stamper.Close();
-
-            iTextSharp.text.Document ManagementReportDoc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, 15f, 15f, 75f, 75f);
-
-            //FileStream file = new FileStream( "E://"   + DateTime.Now.ToString("dd-MMMM-yy") + ".pdf", System.IO.FileMode.OpenOrCreate);
-
-            iTextSharp.text.pdf.PdfWriter writer = iTextSharp.text.pdf.PdfWriter.GetInstance(ManagementReportDoc, fFileStream); // PdfWriter.GetInstance(ManagementReportDoc, file);
-
-            ManagementReportDoc.Open();
-            //// step 4 将一个元素添加到文档中
-            ManagementReportDoc.Add(new iTextSharp.text.Paragraph("Hello World!"));
-            //// step 5 关闭文档 
-            ManagementReportDoc.Close();
+            // PDFRead();
+            PDFTxtRead();
             Console.WriteLine("ok");
             Console.ReadLine();
         }
-
-        public class Animal
-        {
-            public virtual void J()
-            {
-                Console.WriteLine("叫一声");
-            }
-            public void WangWang()
-            {
-                J();
-            }
-        }
-
-        public class Dog : Animal
-        {
-            public override void J()
-            {
-                Console.WriteLine("狗叫");
-            }
-        }
-        public class Bandiangou : Dog
-        {
-
-        }
-
-        #region 取消线程测试
-
-        #endregion
-
-        #region 二维码定位
+        //整理txt
+        //—\d+—.*去掉页码
+        //^\s*\r?\n去掉空行
         /// <summary>
-        /// 会产生graphics异常的PixelFormat
+        /// 广西
         /// </summary>
-        private static PixelFormat[] indexedPixelFormats = { PixelFormat.Undefined, PixelFormat.DontCare,
-PixelFormat.Format16bppArgb1555, PixelFormat.Format1bppIndexed, PixelFormat.Format4bppIndexed,
-PixelFormat.Format8bppIndexed
-    };
+        public static void GXPDFTxtRead()
+        {
+            const string xuexiaoreg = "(\\d{4,4})([\\u4e00-\\u9fa5]+[\\r\\n]*?.*[香港市]\\))";
+            const string zhuanyereg = "\\b(\\d{2}|[ab]\\d)([\\u4e00-\\u9fa5]{2,}[\\S\\s]*?)\\s*(\\d+)([一二三四五两六七八九]年医*)(\\d+)";
+            //PDF模板路径
+            string loadpath = "E:\\download\\pdf-to-txt-python-master\\gx1.txt";
+            string txtPaht = "E:\\download\\pdf-to-txt-python-master\\gx3.txt";
+            var lines = File.ReadAllLines(loadpath);
+            var str = File.ReadAllText(loadpath);
+            var list = new List<Xuexiao>();
+
+            StringBuilder newStr = new StringBuilder();
+            Dictionary<int, Xuexiao> piciDic = new Dictionary<int, Xuexiao>();
+
+            #region 批次
+            var index = str.IndexOf("(一)提前录取普通院校");
+            Xuexiao pici = new Xuexiao();
+            pici.Pici = "提前批";
+            pici.ABduan = "提前录取普通院校";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("(二)提前录取军队院校");
+            pici = new Xuexiao();
+            pici.Pici = "提前批";
+            pici.ABduan = "提前录取军队院校";
+            piciDic.Add(index, pici);
+
+            index = str.IndexOf("(三)提前录取招飞(民航)院校");
+            pici = new Xuexiao();
+            pici.Pici = "提前批";
+            pici.ABduan = "提前录取招飞(民航)院校";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("(四)提前录取公安、司法、消防院校");
+            pici = new Xuexiao();
+            pici.Pici = "提前批";
+            pici.ABduan = "提前录取公安、司法、消防院校";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("2.公安专科院校");
+            pici = new Xuexiao();
+            pici.Pici = "提前批";
+            pici.ABduan = "公安专科院校";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("3.面向贫困地区定向招生本科专项计划(国家专项)");
+            pici = new Xuexiao();
+            pici.Pici = "提前批";
+            pici.ABduan = "面向贫困地区定向招生本科专项计划(国家专项)";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("1.特殊类型招生");
+            pici = new Xuexiao();
+            pici.Pici = "普通本科第一批";
+            pici.ABduan = "1.特殊类型招生";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("2.A段");
+            pici = new Xuexiao();
+            pici.Pici = "普通本科第一批";
+            pici.ABduan = "A段";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("3.B段");
+            pici = new Xuexiao();
+            pici.Pici = "普通本科第一批";
+            pici.ABduan = "B段";
+            piciDic.Add(index, pici);
+
+            index = str.IndexOf("1.A段");
+            pici = new Xuexiao();
+            pici.Pici = "普通本科第二批";
+            pici.ABduan = "A段";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("2.B段");
+            pici = new Xuexiao();
+            pici.Pici = "普通本科第二批";
+            pici.ABduan = "B段";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("体育类本科批");
+            pici = new Xuexiao();
+            pici.Pici = "体育类本科批";
+            pici.ABduan = "体育类本科批";
+            piciDic.Add(index, pici);
+
+            index = str.IndexOf("2.体育类高职(专科)批");
+            pici = new Xuexiao();
+            pici.Pici = "体育类高职(专科)批";
+            pici.ABduan = "体育类高职(专科)批";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("(1)A段");
+            pici = new Xuexiao();
+            pici.Pici = "艺术类本科提前批";
+            pici.ABduan = "A段";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("(2)B段");
+            pici = new Xuexiao();
+            pici.Pici = "艺术类本科提前批";
+            pici.ABduan = "B段";
+            piciDic.Add(index, pici);
+
+            index = str.IndexOf("2.艺术类本科批A段");
+            pici = new Xuexiao();
+            pici.Pici = "艺术类本科批";
+            pici.ABduan = "A段";
+            piciDic.Add(index, pici);
+
+            index = str.IndexOf("3.艺术类本科批B段");
+            pici = new Xuexiao();
+            pici.Pici = "艺术类本科批";
+            pici.ABduan = "B段";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("4.艺术类高职(专科)批A段");
+            pici = new Xuexiao();
+            pici.Pici = "艺术类高职(专科)批";
+            pici.ABduan = "A段";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("5.艺术类高职(专科)批B段");
+            pici = new Xuexiao();
+            pici.Pici = "艺术类高职(专科)批";
+            pici.ABduan = "B段";
+            piciDic.Add(index, pici);
+
+
+            index = str.IndexOf("八、高职(专科)提前批");
+            pici = new Xuexiao();
+            pici.Pici = "高职(专科)提前批";
+            pici.ABduan = "高职(专科)提前批";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("九、普通高职(专科)批");
+            pici = new Xuexiao();
+            pici.Pici = "普通高职(专科)批";
+            pici.ABduan = "普通高职(专科)批";
+            piciDic.Add(index, pici);
+            #endregion
+
+            Xuexiao xuexiao = null;
+            var listMatch = Regex.Matches(str, xuexiaoreg, RegexOptions.Multiline);
+            foreach (Match item in listMatch)
+            {
+                xuexiao = new Xuexiao()
+                {
+                    Pici = pici.Pici,
+                    ABduan = pici.ABduan,
+                    Index = item.Index,
+                    Code = item.Groups[1].Value,
+                    Name = item.Groups[2].Value.Replace("\n", "").Replace("\r", ""),
+                    Zhuanyes = new List<Zhuanye>(),
+                };
+                var piciItem = piciDic.Where(x => x.Key <= item.Index).LastOrDefault();
+                if (piciItem.Value != null)
+                {
+                    xuexiao.Pici = piciItem.Value.Pici;
+                    xuexiao.ABduan = piciItem.Value.ABduan;
+                }
+                list.Add(xuexiao);
+                var next = item.NextMatch();
+                string piceces = "";
+                if (next != null && next.Success)
+                {
+                    piceces = str.Substring(item.Index, next.Index - item.Index);
+                }
+                else
+                {
+                    piceces = str.Substring(item.Index);
+                }
+                if (piceces.Contains("注:"))
+                {
+                    xuexiao.Beizhu = piceces.Substring(piceces.IndexOf("注:")).Replace("\n", "").Replace("\r", "");
+                }
+                var wenshiIndex = piceces.IndexOf("文史类:");
+                var ligongIndex = piceces.IndexOf("理工类:");
+                if (wenshiIndex < 0 && ligongIndex < 0)
+                {
+                    wenshiIndex = piceces.IndexOf("艺术文");
+                    ligongIndex = piceces.IndexOf("艺术理");
+                }
+                var regValue = Regex.Matches(piceces, zhuanyereg);
+                foreach (Match zyitem in regValue)
+                {
+                    var zy = new Zhuanye()
+                    {
+                        Code = zyitem.Groups[1].Value,
+                        Name = zyitem.Groups[2].Value.Replace("\n", "").Replace("\r", ""),
+                        Renshu = zyitem.Groups[3].Value,
+                        Xuenian = zyitem.Groups[4].Value,
+                        Xuefei = zyitem.Groups[5].Value,
+
+                    };
+                    if (ligongIndex >= 0 && zyitem.Index > ligongIndex && zyitem.Index < wenshiIndex && wenshiIndex >= 0)
+                    {
+                        zy.Wenli = "理";
+                    }
+                    else if (zyitem.Index >= wenshiIndex && wenshiIndex >= 0)
+                    {
+                        zy.Wenli = "文";
+                    }
+                    else if (ligongIndex >= 0 && zyitem.Index > ligongIndex && wenshiIndex < 0)
+                    {
+                        zy.Wenli = "理";
+                    }
+                    xuexiao.Zhuanyes.Add(zy);
+                }
+            }
+            File.WriteAllText(txtPaht, Newtonsoft.Json.JsonConvert.SerializeObject(list));
+            Console.WriteLine("完成");
+        }
+
         /// <summary>
-        /// 判断图片的PixelFormat 是否在 引发异常的 PixelFormat 之中
+        /// 黑龙江
         /// </summary>
-        /// <param name="imgPixelFormat">原图片的PixelFormat</param>
-        /// <returns></returns>
-        private static bool IsPixelFormatIndexed(PixelFormat imgPixelFormat)
+        public static void PDFTxtRead()
         {
-            foreach (PixelFormat pf in indexedPixelFormats)
-            {
-                if (pf.Equals(imgPixelFormat)) return true;
-            }
+            const string xuexiaoreg = "(\\d{4,4})([\\u4e00-\\u9fa5]+[\\r\\n]*?.*[香港市]\\))";
+            const string zhuanyereg = "\\b(\\d{2}|[ab]\\d)([\\u4e00-\\u9fa5]{2,}[\\S\\s]*?)\\s*(\\d+)([一二三四五两六七八九]年医*)(\\d+)";
+            //PDF模板路径
+            string loadpath = "E:\\download\\pdf-to-txt-python-master\\1.txt";
+            string txtPaht = "E:\\download\\pdf-to-txt-python-master\\3.txt";
+            var lines = File.ReadAllLines(loadpath);
+            var str = File.ReadAllText(loadpath);
+            var list = new List<Xuexiao>();
 
-            return false;
+            StringBuilder newStr = new StringBuilder();
+            Dictionary<int, Xuexiao> piciDic = new Dictionary<int, Xuexiao>();
+
+            #region 批次
+            var index = str.IndexOf("(一)提前录取普通院校");
+            Xuexiao pici = new Xuexiao();
+            pici.Pici = "提前批";
+            pici.ABduan = "提前录取普通院校";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("(二)提前录取军队院校");
+            pici = new Xuexiao();
+            pici.Pici = "提前批";
+            pici.ABduan = "提前录取军队院校";
+            piciDic.Add(index, pici);
+
+            index = str.IndexOf("(三)提前录取招飞(民航)院校");
+            pici = new Xuexiao();
+            pici.Pici = "提前批";
+            pici.ABduan = "提前录取招飞(民航)院校";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("(四)提前录取公安、司法、消防院校");
+            pici = new Xuexiao();
+            pici.Pici = "提前批";
+            pici.ABduan = "提前录取公安、司法、消防院校";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("2.公安专科院校");
+            pici = new Xuexiao();
+            pici.Pici = "提前批";
+            pici.ABduan = "公安专科院校";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("3.面向贫困地区定向招生本科专项计划(国家专项)");
+            pici = new Xuexiao();
+            pici.Pici = "提前批";
+            pici.ABduan = "面向贫困地区定向招生本科专项计划(国家专项)";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("1.特殊类型招生");
+            pici = new Xuexiao();
+            pici.Pici = "普通本科第一批";
+            pici.ABduan = "1.特殊类型招生";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("2.A段");
+            pici = new Xuexiao();
+            pici.Pici = "普通本科第一批";
+            pici.ABduan = "A段";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("3.B段");
+            pici = new Xuexiao();
+            pici.Pici = "普通本科第一批";
+            pici.ABduan = "B段";
+            piciDic.Add(index, pici);
+
+            index = str.IndexOf("1.A段");
+            pici = new Xuexiao();
+            pici.Pici = "普通本科第二批";
+            pici.ABduan = "A段";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("2.B段");
+            pici = new Xuexiao();
+            pici.Pici = "普通本科第二批";
+            pici.ABduan = "B段";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("体育类本科批");
+            pici = new Xuexiao();
+            pici.Pici = "体育类本科批";
+            pici.ABduan = "体育类本科批";
+            piciDic.Add(index, pici);
+
+            index = str.IndexOf("2.体育类高职(专科)批");
+            pici = new Xuexiao();
+            pici.Pici = "体育类高职(专科)批";
+            pici.ABduan = "体育类高职(专科)批";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("(1)A段");
+            pici = new Xuexiao();
+            pici.Pici = "艺术类本科提前批";
+            pici.ABduan = "A段";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("(2)B段");
+            pici = new Xuexiao();
+            pici.Pici = "艺术类本科提前批";
+            pici.ABduan = "B段";
+            piciDic.Add(index, pici);
+
+            index = str.IndexOf("2.艺术类本科批A段");
+            pici = new Xuexiao();
+            pici.Pici = "艺术类本科批";
+            pici.ABduan = "A段";
+            piciDic.Add(index, pici);
+
+            index = str.IndexOf("3.艺术类本科批B段");
+            pici = new Xuexiao();
+            pici.Pici = "艺术类本科批";
+            pici.ABduan = "B段";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("4.艺术类高职(专科)批A段");
+            pici = new Xuexiao();
+            pici.Pici = "艺术类高职(专科)批";
+            pici.ABduan = "A段";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("5.艺术类高职(专科)批B段");
+            pici = new Xuexiao();
+            pici.Pici = "艺术类高职(专科)批";
+            pici.ABduan = "B段";
+            piciDic.Add(index, pici);
+
+
+            index = str.IndexOf("八、高职(专科)提前批");
+            pici = new Xuexiao();
+            pici.Pici = "高职(专科)提前批";
+            pici.ABduan = "高职(专科)提前批";
+            piciDic.Add(index, pici);
+            index = str.IndexOf("九、普通高职(专科)批");
+            pici = new Xuexiao();
+            pici.Pici = "普通高职(专科)批";
+            pici.ABduan = "普通高职(专科)批";
+            piciDic.Add(index, pici);
+            #endregion
+
+            Xuexiao xuexiao = null;
+            var listMatch = Regex.Matches(str, xuexiaoreg, RegexOptions.Multiline);
+            foreach (Match item in listMatch)
+            {
+                xuexiao = new Xuexiao()
+                {
+                    Pici = pici.Pici,
+                    ABduan = pici.ABduan,
+                    Index = item.Index,
+                    Code = item.Groups[1].Value,
+                    Name = item.Groups[2].Value.Replace("\n", "").Replace("\r", ""),
+                    Zhuanyes = new List<Zhuanye>(),
+                };
+                var piciItem = piciDic.Where(x => x.Key <= item.Index).LastOrDefault();
+                if (piciItem.Value != null)
+                {
+                    xuexiao.Pici = piciItem.Value.Pici;
+                    xuexiao.ABduan = piciItem.Value.ABduan;
+                }
+                list.Add(xuexiao);
+                var next = item.NextMatch();
+                string piceces = "";
+                if (next != null && next.Success)
+                {
+                    piceces = str.Substring(item.Index, next.Index - item.Index);
+                }
+                else
+                {
+                    piceces = str.Substring(item.Index);
+                }
+                if (piceces.Contains("注:"))
+                {
+                    xuexiao.Beizhu = piceces.Substring(piceces.IndexOf("注:")).Replace("\n", "").Replace("\r", "");
+                }
+                var wenshiIndex = piceces.IndexOf("文史类:");
+                var ligongIndex = piceces.IndexOf("理工类:");
+                if (wenshiIndex < 0 && ligongIndex < 0)
+                {
+                    wenshiIndex = piceces.IndexOf("艺术文");
+                    ligongIndex = piceces.IndexOf("艺术理");
+                }
+                var regValue = Regex.Matches(piceces, zhuanyereg);
+                foreach (Match zyitem in regValue)
+                {
+                    var zy = new Zhuanye()
+                    {
+                        Code = zyitem.Groups[1].Value,
+                        Name = zyitem.Groups[2].Value.Replace("\n", "").Replace("\r", ""),
+                        Renshu = zyitem.Groups[3].Value,
+                        Xuenian = zyitem.Groups[4].Value,
+                        Xuefei = zyitem.Groups[5].Value,
+
+                    };
+                    if (ligongIndex >= 0 && zyitem.Index > ligongIndex && zyitem.Index < wenshiIndex && wenshiIndex >= 0)
+                    {
+                        zy.Wenli = "理";
+                    }
+                    else if (zyitem.Index >= wenshiIndex && wenshiIndex >= 0)
+                    {
+                        zy.Wenli = "文";
+                    }
+                    else if (ligongIndex >= 0 && zyitem.Index > ligongIndex && wenshiIndex < 0)
+                    {
+                        zy.Wenli = "理";
+                    }
+                    xuexiao.Zhuanyes.Add(zy);
+                }
+            }
+            File.WriteAllText(txtPaht, Newtonsoft.Json.JsonConvert.SerializeObject(list));
+            Console.WriteLine("完成");
         }
-        static void Qrcode()
+
+        public class Xuexiao
         {
-            string path = "mycode.jpg";// "fc2411684f96466684d667c2aa5d38a3.png";
-            Bitmap myImage = Image.FromFile(path) as Bitmap;
-            Console.WriteLine("请输入地址");
-            string url = Console.ReadLine();
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
-            request.Method = "Get";
-            Bitmap oriBitmap = Image.FromFile(@"e92bda7fa55c4f41a8e3dc65ce56755f.png") as Bitmap;
-            using (var stream = request.GetResponse().GetResponseStream())
-            {
-                oriBitmap = Image.FromStream(stream) as Bitmap;
-            }
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            var source = new BitmapLuminanceSource(oriBitmap);
-            var bitmap = new BinaryBitmap(new HybridBinarizer(source));
-            QRCodeReader reader = new QRCodeReader();
-            var result = reader.decode(bitmap);
-            if (result != null)
-            {
-                Console.WriteLine($"二维码内容{result.Text}");
-                var dsd = result.ResultMetadata;
-                foreach (var point in result.ResultPoints)
-                {
-                    Console.WriteLine($"二维码坐标：{point.X},{point.Y}");
-
-                }
-
-                float point1X = result.ResultPoints[0].X;
-                float point1Y = result.ResultPoints[0].Y;
-
-                float point2X = result.ResultPoints[1].X;
-                float point2Y = result.ResultPoints[1].Y;
-
-                var rect = new Rectangle();
-                rect.X = (int)result.ResultPoints[1].X;
-                rect.Y = (int)result.ResultPoints[1].Y;
-                rect.Width = (int)Math.Abs(result.ResultPoints[1].X - result.ResultPoints[2].X);
-                rect.Height = (int)Math.Abs(result.ResultPoints[0].Y - result.ResultPoints[1].Y);
-
-                Bitmap bmp = oriBitmap;
-                //如果原图片是索引像素格式之列的，则需要转换
-                if (IsPixelFormatIndexed(oriBitmap.PixelFormat))
-                {
-                    bmp = new Bitmap(oriBitmap.Width, oriBitmap.Height, PixelFormat.Format32bppArgb);
-                    using (Graphics g = Graphics.FromImage(bmp))
-                    {
-                        g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-                        g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-                        g.DrawImage(oriBitmap, 0, 0);
-                    }
-
-                }
-
-                Bitmap blockBitmap = cutImage(bmp, new Point((int)point1X, (int)point1Y), 100, 100);
-
-                //  blockBitmap.Save("block.png");
-                var pixs = GetPixs(blockBitmap);
-                int index = 0;
-                int whiteCount = 0;
-                for (int x = 0; x < pixs[0].Length; x++)
-                {
-                    if (x > 0 && pixs[0][x] != pixs[0][x - 1])
-                    {
-                        whiteCount += 1;
-                    }
-                    if (whiteCount == 3)
-                    {
-                        index = x;
-                        break;
-                    }
-                }
-                rect.X -= index;
-                rect.Y -= index;
-                rect.Height += 2 * index;
-                rect.Width += 2 * index;
-                using (Graphics g = Graphics.FromImage(bmp))
-                {
-
-                    g.DrawImage(myImage, rect);
-                    g.DrawRectangle(new Pen(new SolidBrush(Color.Red), 2), rect);
-                }
-                stopwatch.Stop();
-                Console.WriteLine("耗时" + stopwatch.ElapsedMilliseconds);
-                bmp.Save("newimage.png");
-                blockBitmap.Dispose();
-            }
-            else
-            {
-                Console.WriteLine("识别失败");
-            }
+            public string Code { get; set; }
+            public string Name { get; set; }
+            public string Beizhu { get; set; }
+            public string Pici { get; set; }
+            public string ABduan { get; set; }
+            [JsonIgnore]
+            public long Index { get; set; }
+            public List<Zhuanye> Zhuanyes { get; set; }
         }
 
-
-        /// <summary>
-        /// 截取图片区域，返回所截取的图片
-        /// </summary>
-        /// <param name="SrcImage"></param>
-        /// <param name="pos"></param>
-        /// <param name="cutWidth"></param>
-        /// <param name="cutHeight"></param>
-        /// <returns></returns>
-        private static Bitmap cutImage(Bitmap SrcImage, Point pos, int cutWidth, int cutHeight)
+        public class Zhuanye
         {
-
-            Bitmap cutedImage = null;
-
-            //先初始化一个位图对象，来存储截取后的图像
-            Bitmap bmpDest = new Bitmap(cutWidth, cutHeight, PixelFormat.Format32bppRgb);
-            Graphics g = Graphics.FromImage(bmpDest);
-
-            //矩形定义,将要在被截取的图像上要截取的图像区域的左顶点位置和截取的大小
-            Rectangle rectSource = new Rectangle(pos.X, pos.Y, cutWidth, cutHeight);
-
-
-            //矩形定义,将要把 截取的图像区域 绘制到初始化的位图的位置和大小
-            //rectDest说明，将把截取的区域，从位图左顶点开始绘制，绘制截取的区域原来大小
-            Rectangle rectDest = new Rectangle(0, 0, cutWidth, cutHeight);
-
-            //第一个参数就是加载你要截取的图像对象，第二个和第三个参数及如上所说定义截取和绘制图像过程中的相关属性，第四个属性定义了属性值所使用的度量单位
-            g.DrawImage(SrcImage, rectDest, rectSource, GraphicsUnit.Pixel);
-
-            //在GUI上显示被截取的图像
-            cutedImage = bmpDest;
-
-            g.Dispose();
-
-            return cutedImage;
-
+            public string Code { get; set; }
+            public string Name { get; set; }
+            public string Renshu { get; set; }
+            public string Xuefei { get; set; }
+            public string Xuenian { get; set; }
+            public string Wenli { get; set; }
+            [JsonIgnore]
+            public long Index { get; set; }
         }
-        /// <summary>
-        /// 二值化图片
-        /// </summary>
-        /// <param name="bitmap"></param>
-        /// <returns></returns>
-        public static short[][] GetPixs(Bitmap bitmap)
-        {
-            int height = bitmap.Height;
-            int width = bitmap.Width;
-            byte tempB, tempG, tempR;
-            short[][] spOriginData = new short[height][];
-            for (int i = 0; i < height; i++)
-            {
-                spOriginData[i] = new short[width];
-            }
-
-            BitmapData dataOut = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
-            int offset = dataOut.Stride - dataOut.Width * 3;
-            try
-            {
-                unsafe
-                {
-                    byte* pOut = (byte*)(dataOut.Scan0.ToPointer());
-
-                    for (int y = 0; y < height; y++)
-                    {
-                        for (int x = 0; x < width; x++)
-                        {
-                            tempB = pOut[0];
-                            tempG = pOut[1];
-                            tempR = pOut[2];
-                            double data = 0.31 * tempR + 0.59 * tempG + 0.11 * tempB;
-                            if (data > 255)
-                                spOriginData[y][x] = 255;
-                            else
-                                if (data < 0)
-                                spOriginData[y][x] = 0;
-                            else
-                                spOriginData[y][x] = (short)(data > 127 ? 255 : 0);
-                            pOut += 3;
-                        }
-                        pOut += offset;
-                    }
-                    bitmap.UnlockBits(dataOut);
-                }
-            }
-            catch
-            {
-            }
-            return spOriginData;
-        }
-        #endregion
-
-        #region 图片压缩
-
-        #endregion
     }
 }

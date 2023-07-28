@@ -18,8 +18,8 @@ namespace ConsoleFX
 {
     public class kuijichafen
     {
-        public static List<string> HostList = new List<string> { "kzp.mof.gov.cn", "221.181.73.5:81/", "60.208.116.171/", "103.59.150.151:81/" };
-        public static List<string> Page = new List<string> { "1_b4036a0225202016", "1_b4036a0225202016" };
+        public static List<string> HostList = new List<string> { "kzp.mof.gov.cn" };
+        public static List<string> Page = new List<string> { "1_wmjrei873mbkdiaz2306"};
         public string Host { get; set; }
         public string GetHost(int type)
         {
