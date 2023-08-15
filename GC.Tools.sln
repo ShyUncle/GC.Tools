@@ -39,8 +39,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreIdentity", "CoreIdentit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElasticSearchDemo", "ElasticSearchDemo\ElasticSearchDemo.csproj", "{DEBE5395-8AE3-429F-B4D5-9154F1AA17B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApp2", "WindowsFormsApp2\WindowsFormsApp2.csproj", "{FA1F41C6-E23A-4891-8B80-D0EB1855071C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnowFlakeTest", "SnowFlakeTest\SnowFlakeTest.csproj", "{8DBB5A89-2251-4290-A2CD-0CB3B1307FB0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Selenium", "Selenium\Selenium.csproj", "{1267BCE5-2D33-4A64-B25A-DDB5BA248213}"
@@ -127,10 +125,6 @@ Global
 		{DEBE5395-8AE3-429F-B4D5-9154F1AA17B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DEBE5395-8AE3-429F-B4D5-9154F1AA17B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DEBE5395-8AE3-429F-B4D5-9154F1AA17B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FA1F41C6-E23A-4891-8B80-D0EB1855071C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FA1F41C6-E23A-4891-8B80-D0EB1855071C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FA1F41C6-E23A-4891-8B80-D0EB1855071C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FA1F41C6-E23A-4891-8B80-D0EB1855071C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8DBB5A89-2251-4290-A2CD-0CB3B1307FB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8DBB5A89-2251-4290-A2CD-0CB3B1307FB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DBB5A89-2251-4290-A2CD-0CB3B1307FB0}.Release|Any CPU.ActiveCfg = Release|Any CPU

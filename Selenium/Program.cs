@@ -17,17 +17,10 @@ namespace Selenium
             try
             {
                 CreateDriver();
-                bool goon = true;
-                while (goon)
-                {
-                    GotoOperationPage();
-                    var txt = Console.ReadLine();
-                    if (txt == "exit")
-                    {
-                        goon = false;
-                        Console.WriteLine("结束循环");
-                    }
-                }
+
+                GotoOperationPage();
+                var txt = Console.ReadLine();
+
                 Console.ReadLine();
             }
             catch (Exception ex)
@@ -70,60 +63,22 @@ namespace Selenium
         }
         static void GotoOperationPage()
         {
-            driver.Navigate().GoToUrl("https://open.work.weixin.qq.com/wwopen/developer#/sass/customApp/deploy/detail?auditorderid=au20211227102640341");
+            driver.Navigate().GoToUrl("https://www.baidu.com");
             Thread.Sleep(1000);
-            var loginPage = GetLoginIframeElement();
-            if (loginPage != null)
+            var kewordInput = FindElement("//input[@id=\"kw\"]");
+            if (kewordInput != null)
             {
-                Console.WriteLine("检测到登录页");
-                driver.SwitchTo().Frame(loginPage);
-
-                Console.WriteLine(driver.Title);
-                Console.WriteLine("查找登录二维码");
-                var logPic = FindElement("//img[@class=\"qrcode_login_img js_qrcode_img\"]");
-                if (logPic != null)
-                {
-                    Console.WriteLine("查找到登录二维码");
-                    Screenshot screenshot = ((ITakesScreenshot)logPic).GetScreenshot();
-                    screenshot.ToString();
-                    screenshot.SaveAsFile("qrcode.png", ScreenshotImageFormat.Png);
-                    Console.WriteLine("已截图，等待管理员扫码");
-                }
-                while (logPic != null)
-                {
-                    Thread.Sleep(10000);
-                    var refreshBtn = FindElement("//a[@class=\"qrcode_login_reload\"]");
-                    if (refreshBtn != null && refreshBtn.Displayed)
-                    {
-                        refreshBtn.Click();
-                        Screenshot screenshot = ((ITakesScreenshot)logPic).GetScreenshot();
-                        screenshot.SaveAsFile("qrcode.png", ScreenshotImageFormat.Png);
-                        Console.WriteLine("二维码过期重新截图，等待管理员扫码");
-                    }
-                    logPic = FindElement("//img[@class=\"qrcode_login_img js_qrcode_img\"]");
-                }
-
-                Console.WriteLine("扫码完成");
+                Console.WriteLine("找到文本框");
+                kewordInput.Click();
+                kewordInput.SendKeys("嗨");
                 Thread.Sleep(100);
-                driver.SwitchTo().DefaultContent();
-                var corpList = FindElements("//li[@class=\"login_selectBiz_item\"]");
-                foreach (var corp in corpList)
+                var searchBtn = FindElement("//input[@id=\"su\"]");
+                if (searchBtn != null)
                 {
-                    var corpName = corp.FindElement(By.XPath("//div[@class=\"login_selectBiz_item_name\"]"))?.Text;
-                    if (corpName != null && corpName.Trim() == "河南天英信息技术有限公司")
-                    {
-                        corp.Click();
-
-                        Console.WriteLine("选择公司完毕");
-                        break;
-                    }
+                    searchBtn.Click();
                 }
-                Thread.Sleep(5000);
             }
-            Console.WriteLine("进入操作页");
-            driver.Navigate().GoToUrl("https://open.work.weixin.qq.com/wwopen/developer#/sass/customApp/tpl/info?id=1011292");
-
-
+            Thread.Sleep(1000);
         }
 
         static IWebElement FindElement(string xpath)
@@ -151,20 +106,7 @@ namespace Selenium
                 return new ReadOnlyCollection<IWebElement>(new List<IWebElement>());
             }
         }
-
-        static IWebElement GetLoginIframeElement()
-        {
-            try
-            {
-                return driver.FindElement(By.TagName("iframe"));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return null;
-            }
-        }
-
+  
         /// <summary>
         /// Wait for the expected condition is satisfied, return immediately
         /// </summary>
