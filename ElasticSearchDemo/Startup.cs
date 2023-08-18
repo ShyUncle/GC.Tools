@@ -42,6 +42,14 @@ namespace ElasticSearchDemo
                 }
                 return handler;
             });
+            services.Configure<ElasticSearchOptions>(options =>
+            {
+                options.AuthUserName = "elastic";
+                options.AuthPassWord = "123456";
+                options.ConnectionString = "http://localhost:9200";
+
+            });
+            services.AddSingleton<IElasticClientProvider, ElasticClientProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

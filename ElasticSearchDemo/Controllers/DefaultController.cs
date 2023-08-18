@@ -15,22 +15,11 @@ namespace ElasticSearchDemo.Controllers
     public class DefaultController : ControllerBase
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        public DefaultController(IHttpClientFactory httpClientFactory)
-        {
-            _httpClientFactory = httpClientFactory;
-            //var node = new Uri("http://172.24.91.110:9200");
-
-            var node = new Uri("http://192.168.174.130:9200");
-
-            var settings1 = new ConnectionSettings(node).DefaultIndex("person");
-            settings1.EnableHttpCompression(true);
-            //settings1.ServerCertificateValidationCallback(CertificateValidations.AllowAll);
-            clientPerson = new ElasticClient(settings1);
-
-
+        private readonly IElasticClientProvider _elasticClientProvider;
+        public DefaultController(IHttpClientFactory httpClientFactory, IElasticClientProvider elasticClientProvider)
+        { 
+            _elasticClientProvider = elasticClientProvider;  
         }
-
-        private ElasticClient clientPerson;
         [HttpGet]
         /// <summary>
         /// 初始化数据
@@ -38,6 +27,7 @@ namespace ElasticSearchDemo.Controllers
         /// <returns></returns>
         public async Task Get()
         {
+            var clientPerson = _elasticClientProvider.GetElasticClient();
             var r = clientPerson.Indices.Delete("person");
             var bc = clientPerson.Indices.Create("person", x => x.Map<Person>((m) => m.AutoMap().Properties(p => p.Text(x => x.Name(x => x.FirstName).Fielddata(true)))));
             var list = new List<Person>() {
@@ -104,7 +94,19 @@ namespace ElasticSearchDemo.Controllers
             var response = await clientPerson.IndexManyAsync<Person>(list);
             //    await clientPerson.IndexAsync(list[0], i => i.Index("person"));//自定义索引
             // await clientPerson.BulkAsync(b => b.Index("person").IndexMany(list));//自定义索引
-         //   clientPerson.BulkAll(list, i => i.Index("person").BackOffTime("30s").BackOffRetries(10).RefreshOnCompleted().MaxDegreeOfParallelism(Environment.ProcessorCount).Size(1000)).Wait(;
+            //   clientPerson.BulkAll(list, i => i.Index("person").BackOffTime("30s").BackOffRetries(10).RefreshOnCompleted().MaxDegreeOfParallelism(Environment.ProcessorCount).Size(1000)).Wait(;
+        }
+
+        [HttpGet("indexs")]
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public async Task<object> GetIndexs()
+        {
+            var clientPerson = _elasticClientProvider.GetElasticClient();
+            var r =await  clientPerson.Cat.IndicesAsync();
+            return r.Records;
         }
 
         /// <summary>
@@ -115,8 +117,9 @@ namespace ElasticSearchDemo.Controllers
         [Route("search")]
         public async Task<object> Search()
         {
-            var res = await clientPerson.SearchAsync<Person>(d => d.From(0).Size(10).Query(s => s.Match(q => q.Field(f => f.LastName).Query("七"))));
-            return res.Documents;
+            var clientPerson = _elasticClientProvider.GetElasticClient();
+            var res = await clientPerson.SearchAsync<Person>(d => d.From(0).Size(10).Query(s => s.Match(q => q.Field(f => f.LastName).Query("七"))).Highlight(d => d.Fields(ss => ss.Field("LastName"))));
+            return new { res.Hits, res.Documents };
 
         }
         /// <summary>
@@ -127,6 +130,7 @@ namespace ElasticSearchDemo.Controllers
         [Route("searchAge")]
         public async Task<object> SearchAge()
         {
+            var clientPerson = _elasticClientProvider.GetElasticClient();
             var res = await clientPerson.SearchAsync<Person>(d => d.From(0).Size(10).Query(s => s.Range(r => r.Field(f => f.Age).GreaterThan(25))));
             return res.Documents;
 
@@ -152,8 +156,10 @@ namespace ElasticSearchDemo.Controllers
         [HttpGet]
         [Route("Aggregations")]
         public async Task<object> Aggregations()
-        {   //映射firstname可以作为sort,聚合
-            var res = await clientPerson.SearchAsync<Person>(d => d.Size(0).Query(s =>
+        {
+            var clientPerson = _elasticClientProvider.GetElasticClient(); 
+           
+            var res = await clientPerson.SearchAsync<Person>(d => d.Query(s =>
             s.Match(q => q.Field(f => f.LastName).Query("七"))).Aggregations(a => a.Terms("xing", s => s.Field(f => f.FirstName))));
             return res.Aggregations.Terms("xing").Buckets.Select(x => new { x.Key, x.DocCount });
         }
