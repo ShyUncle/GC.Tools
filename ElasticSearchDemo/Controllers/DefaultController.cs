@@ -17,8 +17,8 @@ namespace ElasticSearchDemo.Controllers
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IElasticClientProvider _elasticClientProvider;
         public DefaultController(IHttpClientFactory httpClientFactory, IElasticClientProvider elasticClientProvider)
-        { 
-            _elasticClientProvider = elasticClientProvider;  
+        {
+            _elasticClientProvider = elasticClientProvider;
         }
         [HttpGet]
         /// <summary>
@@ -105,7 +105,7 @@ namespace ElasticSearchDemo.Controllers
         public async Task<object> GetIndexs()
         {
             var clientPerson = _elasticClientProvider.GetElasticClient();
-            var r =await  clientPerson.Cat.IndicesAsync();
+            var r = await clientPerson.Cat.IndicesAsync();
             return r.Records;
         }
 
@@ -157,8 +157,8 @@ namespace ElasticSearchDemo.Controllers
         [Route("Aggregations")]
         public async Task<object> Aggregations()
         {
-            var clientPerson = _elasticClientProvider.GetElasticClient(); 
-           
+            var clientPerson = _elasticClientProvider.GetElasticClient();
+
             var res = await clientPerson.SearchAsync<Person>(d => d.Query(s =>
             s.Match(q => q.Field(f => f.LastName).Query("七"))).Aggregations(a => a.Terms("xing", s => s.Field(f => f.FirstName))));
             return res.Aggregations.Terms("xing").Buckets.Select(x => new { x.Key, x.DocCount });
