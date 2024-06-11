@@ -19,6 +19,7 @@ namespace ElasticSearchDemo
         public ElasticClientProvider(IOptions<ElasticSearchOptions> option)
         {
             _option = option;
+            _clientPerson = new Dictionary<string, IElasticClient>();
         }
 
         public IElasticClient GetElasticClient(string indexName = "person")

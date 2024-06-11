@@ -109,6 +109,19 @@ namespace ElasticSearchDemo.Controllers
             return r.Records;
         }
 
+        [HttpDelete("{index}")]
+        public async Task<object> DeleteAsync(string index)
+        {
+            var response = _elasticClientProvider.GetElasticClient().Indices.Delete(index);
+            return response.ServerError;
+        }
+        [HttpGet("ana")]
+        public async Task<object> GetA(string words)
+        {
+            var response = await _elasticClientProvider.GetElasticClient().Indices.AnalyzeAsync(a => a.Analyzer("standard").Text(words));
+            var response1 = await _elasticClientProvider.GetElasticClient().Indices.AnalyzeAsync(a => a.Analyzer("ik_max_word").Text(words));
+            return new { response.Tokens, t1 = response1.Tokens };
+        }
         /// <summary>
         /// 搜索
         /// </summary>
@@ -131,6 +144,7 @@ namespace ElasticSearchDemo.Controllers
         public async Task<object> SearchAge()
         {
             var clientPerson = _elasticClientProvider.GetElasticClient();
+
             var res = await clientPerson.SearchAsync<Person>(d => d.From(0).Size(10).Query(s => s.Range(r => r.Field(f => f.Age).GreaterThan(25))));
             return res.Documents;
 
