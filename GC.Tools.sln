@@ -23,8 +23,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityClient", "IdentityC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityMVC", "IdentityMVC\IdentityMVC.csproj", "{1F98C439-B0EC-4740-9661-A18AE07283A7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServerStoreDb", "IdentityServerStoreDb\IdentityServerStoreDb.csproj", "{7AD6B917-C7AA-4E19-A6B6-ABE5A4192697}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityApi", "IdentityApi\IdentityApi.csproj", "{6E4A839A-D420-4BB8-B4BA-DF74ADE676BF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentitySPA", "IdentitySPA\IdentitySPA.csproj", "{35BF193B-899C-4708-B06E-439154CA760D}"
@@ -38,6 +36,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DnsHiJacking", "DnsHiJacking\DnsHiJacking.csproj", "{ED7AB351-41A4-449C-B886-BDE7EB9E0F5F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DnsHiJacking.Host", "DnsHiJacking.Host\DnsHiJacking.Host.csproj", "{6EE1BF98-87C6-4145-A09D-822539FC4643}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyWorkFlow", "MyWorkFlow\MyWorkFlow.csproj", "{59C33FDE-0539-4E4C-826E-15D6FC6F54FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,10 +85,6 @@ Global
 		{1F98C439-B0EC-4740-9661-A18AE07283A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F98C439-B0EC-4740-9661-A18AE07283A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F98C439-B0EC-4740-9661-A18AE07283A7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7AD6B917-C7AA-4E19-A6B6-ABE5A4192697}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7AD6B917-C7AA-4E19-A6B6-ABE5A4192697}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7AD6B917-C7AA-4E19-A6B6-ABE5A4192697}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7AD6B917-C7AA-4E19-A6B6-ABE5A4192697}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6E4A839A-D420-4BB8-B4BA-DF74ADE676BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6E4A839A-D420-4BB8-B4BA-DF74ADE676BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E4A839A-D420-4BB8-B4BA-DF74ADE676BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -117,6 +113,10 @@ Global
 		{6EE1BF98-87C6-4145-A09D-822539FC4643}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6EE1BF98-87C6-4145-A09D-822539FC4643}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6EE1BF98-87C6-4145-A09D-822539FC4643}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59C33FDE-0539-4E4C-826E-15D6FC6F54FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59C33FDE-0539-4E4C-826E-15D6FC6F54FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59C33FDE-0539-4E4C-826E-15D6FC6F54FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59C33FDE-0539-4E4C-826E-15D6FC6F54FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -73,8 +73,7 @@ namespace ElasticSearchDemo.Controllers
             var client = _elasticClientProvider.GetElasticClient(indexName);
             ScrollRequest searchRequest = new ScrollRequest(string.Empty,new Nest.Time(TimeSpan.FromSeconds(100)));
             ScrollRequestParameters scrollRequestParameters = new ScrollRequestParameters();
-            scrollRequestParameters.QueryString.Add("size", pageSize);
-            searchRequest.SourceQueryString = scrollRequestParameters.;
+            scrollRequestParameters.QueryString.Add("size", pageSize); 
             var res = await client.ScrollAsync<PhoneNumberModel>(searchRequest);
             return new { res.Documents, res.Hits, res.HitsMetadata, res.Total };
         }
