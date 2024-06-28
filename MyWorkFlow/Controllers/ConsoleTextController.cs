@@ -8,9 +8,10 @@ using Elsa.Workflows.Memory;
 using Elsa.Workflows.Models;
 using Elsa.Workflows.Options;
 using Elsa.Workflows.Runtime.Contracts;
+using Elsa.Workflows.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using System.Threading; 
 namespace MyWorkFlow.Controllers
 {
     [Route("api/[controller]")]
@@ -18,15 +19,19 @@ namespace MyWorkFlow.Controllers
     public class ConsoleTextController : ControllerBase
     {
         private readonly IWorkflowRunner _workflowRunner;
-        private readonly IWorkflowRuntime _workflowRuntime;
-        public ConsoleTextController(IWorkflowRunner workflowRunner, IWorkflowRuntime workflowRuntime)
+        private readonly IWorkflowRuntime _workflowRuntime; 
+        private readonly ITaskReporter _taskReporter;
+        private readonly IActivityInvoker _activityInvoker;
+        public ConsoleTextController(IWorkflowRunner workflowRunner, IWorkflowRuntime workflowRuntime, ITaskReporter taskReporter)
         {
             _workflowRunner = workflowRunner;
             _workflowRuntime = workflowRuntime;
+            _taskReporter = taskReporter;
         }
         [HttpGet]
         public async Task WriteLine(string text)
         {
+            
             var workflow = new Workflow
             {
                 Root = new Sequence
@@ -45,8 +50,7 @@ namespace MyWorkFlow.Controllers
         private static RunWorkflowResult result = null;
         [HttpGet("customer")]
         public async Task<Workflow> GenWorkFlow()
-        {
-
+        { 
             var workflow = new Workflow
             {
                 Root = new Sequence
@@ -73,7 +77,13 @@ namespace MyWorkFlow.Controllers
             // Resume the workflow.
             await _workflowRunner.RunAsync(result.Workflow, workflowState, options);
             return null;
-        } 
+        }
+
+        [HttpGet("finish")]
+        public async Task FinishWorkflow(string taskId)
+        {
+            await _taskReporter.ReportCompletionAsync(taskId, "汉堡");
+        }
     }
     public class MyEvent : Activity
     {
