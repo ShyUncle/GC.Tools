@@ -79,6 +79,7 @@ namespace MyWorkFlow
 
                 // Enable JavaScript workflow expressions
                 elsa.UseJavaScript(options => options.AllowClrAccess = true);
+               
                 elsa.AddWorkflowsFrom<Program>(); 
                 elsa.UseHttp();
                 // Register custom webhook definitions from the application, if any.
