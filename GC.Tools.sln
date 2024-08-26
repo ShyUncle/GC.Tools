@@ -37,7 +37,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DnsHiJacking", "DnsHiJackin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DnsHiJacking.Host", "DnsHiJacking.Host\DnsHiJacking.Host.csproj", "{6EE1BF98-87C6-4145-A09D-822539FC4643}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyWorkFlow", "MyWorkFlow\MyWorkFlow.csproj", "{59C33FDE-0539-4E4C-826E-15D6FC6F54FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyWorkFlow", "MyWorkFlow\MyWorkFlow.csproj", "{59C33FDE-0539-4E4C-826E-15D6FC6F54FE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignalRSample", "SignalRSample\SignalRSample.csproj", "{8D59FF95-2274-4E31-9124-415649D81336}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -117,6 +119,10 @@ Global
 		{59C33FDE-0539-4E4C-826E-15D6FC6F54FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59C33FDE-0539-4E4C-826E-15D6FC6F54FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59C33FDE-0539-4E4C-826E-15D6FC6F54FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D59FF95-2274-4E31-9124-415649D81336}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D59FF95-2274-4E31-9124-415649D81336}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D59FF95-2274-4E31-9124-415649D81336}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D59FF95-2274-4E31-9124-415649D81336}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

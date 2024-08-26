@@ -7,11 +7,13 @@ using Elsa.Workflows.Management.Services;
 using Elsa.Workflows.Memory;
 using Elsa.Workflows.Models;
 using Elsa.Workflows.Options;
+using Elsa.Workflows.Runtime.Activities;
 using Elsa.Workflows.Runtime.Contracts;
 using Elsa.Workflows.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading; 
+using Newtonsoft.Json;
+using System.Threading;
 namespace MyWorkFlow.Controllers
 {
     [Route("api/[controller]")]
@@ -19,7 +21,7 @@ namespace MyWorkFlow.Controllers
     public class ConsoleTextController : ControllerBase
     {
         private readonly IWorkflowRunner _workflowRunner;
-        private readonly IWorkflowRuntime _workflowRuntime; 
+        private readonly IWorkflowRuntime _workflowRuntime;
         private readonly ITaskReporter _taskReporter;
         private readonly IActivityInvoker _activityInvoker;
         public ConsoleTextController(IWorkflowRunner workflowRunner, IWorkflowRuntime workflowRuntime, ITaskReporter taskReporter)
@@ -31,7 +33,7 @@ namespace MyWorkFlow.Controllers
         [HttpGet]
         public async Task WriteLine(string text)
         {
-            
+
             var workflow = new Workflow
             {
                 Root = new Sequence
@@ -50,7 +52,7 @@ namespace MyWorkFlow.Controllers
         private static RunWorkflowResult result = null;
         [HttpGet("customer")]
         public async Task<Workflow> GenWorkFlow()
-        { 
+        {
             var workflow = new Workflow
             {
                 Root = new Sequence
@@ -73,7 +75,7 @@ namespace MyWorkFlow.Controllers
             var workflowState = result.WorkflowState;
             var bookmark = workflowState.Bookmarks.Single(); // Get the bookmark that was created by the MyEvent activity.
             var options = new RunWorkflowOptions(); options.BookmarkId = bookmark.Id;
-         
+
             // Resume the workflow.
             await _workflowRunner.RunAsync(result.Workflow, workflowState, options);
             return null;
