@@ -9,8 +9,9 @@
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 <form method="post">
-    <input type="submit" value="列表" />
+    <input type="submit" asp-page-handler="" value="列表" />
     <input type="submit" asp-page-handler="Paged" value="分页查询" />
+    <input type="submit" asp-page-handler="Insert" value="插入" />
 </form>
 @if (Model.list != null)
 {

@@ -43,7 +43,19 @@ namespace ShardingEFCoreTest.Pages
             }
         }
         public List<SystemUser> list { get; set; } = new List<SystemUser>();
-
+        //查询所有
+        public void OnPost()
+        {
+            var tails = new List<string> { "00", "01", "02", "03", "04" };
+            foreach (var item in tails)
+            {
+                using (var dbContext = new DbContextFactory().Creat(item))
+                {
+                    list.AddRange(dbContext.Set<SystemUser>().ToList());
+                }
+            }
+            list = list.OrderByDescending(x => x.Id).ToList();
+        }
         public void OnPostPaged()
         {
             var tails = new List<string> { "00", "01", "02", "03", "04" };
@@ -123,18 +135,26 @@ namespace ShardingEFCoreTest.Pages
 
         }
 
+
         //查询所有
-        public void OnPost()
+        public void OnPostInsert()
         {
-            var tails = new List<string> { "00", "01", "02", "03", "04" };
-            foreach (var item in tails)
+
+            var entity = new SystemUser()
             {
-                using (var dbContext = new DbContextFactory().Creat(item))
-                {
-                    list.AddRange(dbContext.Set<SystemUser>().ToList());
-                }
+                Age = 0,
+                Id = "185369127231802" + DateTime.Now.ToString("mmss"),
+                Name = "核辐射"
+            };
+            var tail = Mod(entity.Id);
+            using (var dbContext = new DbContextFactory().Creat(tail))
+            {
+                dbContext.Set<SystemUser>().Add(entity);
+                dbContext.SaveChanges();
             }
-            list = list.OrderByDescending(x => x.Id).ToList();
+
         }
+
+
     }
 }
