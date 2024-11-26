@@ -1,6 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore.Query.Internal;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace ShardingEFCoreTest.DomainModel
 {
@@ -29,14 +34,15 @@ namespace ShardingEFCoreTest.DomainModel
         public ShardingDbContext(string shardingRule, DbContextOptions options) : base(shardingRule, options)
         {
         }
-
+   
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 
             base.OnConfiguring(optionsBuilder);
-            
-                optionsBuilder.ReplaceService<IModelCacheKeyFactory, DynamicModelCacheKeyFactoryDesignTimeSupport>();
-                optionsBuilder.ReplaceService<IModelCustomizer, ShardingModelCustomizer>(); 
+
+            optionsBuilder.ReplaceService<IModelCacheKeyFactory, DynamicModelCacheKeyFactoryDesignTimeSupport>();
+            optionsBuilder.ReplaceService<IModelCustomizer, ShardingModelCustomizer>();
+            optionsBuilder.ReplaceService<IQueryCompiler, EFQueryCompiler>();
         }
     }
     public class DynamicModelCacheKeyFactoryDesignTimeSupport : IModelCacheKeyFactory
