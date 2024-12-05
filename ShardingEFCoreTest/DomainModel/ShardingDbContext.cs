@@ -34,7 +34,7 @@ namespace ShardingEFCoreTest.DomainModel
         public ShardingDbContext(string shardingRule, DbContextOptions options) : base(shardingRule, options)
         {
         }
-   
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 
@@ -42,16 +42,17 @@ namespace ShardingEFCoreTest.DomainModel
 
             optionsBuilder.ReplaceService<IModelCacheKeyFactory, DynamicModelCacheKeyFactoryDesignTimeSupport>();
             optionsBuilder.ReplaceService<IModelCustomizer, ShardingModelCustomizer>();
-            optionsBuilder.ReplaceService<IQueryCompiler, EFQueryCompiler>();
+            if (string.IsNullOrEmpty(ShardingRule))
+                optionsBuilder.ReplaceService<IQueryCompiler, EFQueryCompiler>();
         }
     }
     public class DynamicModelCacheKeyFactoryDesignTimeSupport : IModelCacheKeyFactory
     {
         public object Create(DbContext context, bool designTime)
         {
-            if (context is DbContextBase dynamicContext && !string.IsNullOrEmpty(dynamicContext.ShardingRule))
+            if (context is DbContextBase dynamicContext)
             {
-                return (context.GetType(), dynamicContext.ShardingRule, designTime);
+                return (context.GetType(), dynamicContext.ShardingRule, Guid.NewGuid().ToString("N"), designTime);
             }
             return (object)context.GetType();
         }
@@ -76,18 +77,18 @@ namespace ShardingEFCoreTest.DomainModel
 
                 if (context is DbContextBase contextBase)
                 {
-                    if (!string.IsNullOrEmpty(contextBase.ShardingRule))
+
+                    foreach (var type in shardingTypes)
                     {
-                        foreach (var type in shardingTypes)
+                        if (string.IsNullOrEmpty(contextBase.ShardingRule))
                         {
-                            modelBuilder.Entity(type).ToTable($"{type.Name}_{contextBase.ShardingRule}");
+                            contextBase.ShardingRule = "00";//todo:写死
                         }
+                        modelBuilder.Entity(type).ToTable($"{type.Name}_{contextBase.ShardingRule}");
                     }
                 }
 
             }
-
-
 
         }
 

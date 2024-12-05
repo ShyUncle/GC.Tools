@@ -47,14 +47,21 @@ namespace ShardingEFCoreTest.Pages
         public void OnPost()
         {
             var tails = new List<string> { "00", "01", "02", "03", "04" };
-            foreach (var item in tails)
+            //foreach (var item in tails)
+            //{
+            //    using (var dbContext = new DbContextFactory().Creat(item))
+            //    {
+            //        list.AddRange(dbContext.Set<SystemUser>().ToList()); 
+            //    }
+            //}
+            using (var dbContext = new DbContextFactory().Creat(""))
             {
-                using (var dbContext = new DbContextFactory().Creat(item))
+                list = dbContext.Set<SystemUser>().OrderByDescending(x => x.Id).Skip(3).Take(20).ToList();
+                foreach (var item in list)
                 {
-                    list.AddRange(dbContext.Set<SystemUser>().ToList());
+                    var agen = item.Name;
                 }
             }
-            list = list.OrderByDescending(x => x.Id).ToList();
         }
         public void OnPostPaged()
         {

@@ -30,8 +30,26 @@ namespace ConsoleCore
             {
                 Console.WriteLine(item);
             }
+            var a = new List<int> { 1, 3, 4, 2, 5, 6 };
+            var b = new List<int> { 99 };
+            
+           var re= new Genal<List<int>>().GetEntity(new List<List<int>> { a, b });
+            re.MoveNext();
+
+            foreach (var item in re.Current)
+            {
+
+            }
             Console.ReadKey();
         }
-
+   
+        public class Genal<TEntity>
+        {
+            public IEnumerator<TEntity> GetEntity(List<TEntity> list)
+            {
+                 var en=  list.GetEnumerator();
+                return en;
+            }
+        }
     }
 }
