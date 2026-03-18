@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "AIConsoleApp": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "api-key": "sk-sddddssd"
+      }
+    }
+  }
+}
