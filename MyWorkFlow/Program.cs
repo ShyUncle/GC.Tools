@@ -57,10 +57,10 @@ namespace MyWorkFlow
             {
                 // Configure Management layer to use EF Core.
                 elsa.UseWorkflowManagement(management => management.UseEntityFrameworkCore());
-
+                elsa.AddActivity<CommonFileActivity>();
                 // Configure Runtime layer to use EF Core.
                 elsa.UseWorkflowRuntime(runtime => runtime.UseEntityFrameworkCore());
-
+                //账号密码 admin password
                 // Default Identity features for authentication/authorization.
                 elsa.UseIdentity(identity =>
                 {
@@ -79,8 +79,8 @@ namespace MyWorkFlow
 
                 // Enable JavaScript workflow expressions
                 elsa.UseJavaScript(options => options.AllowClrAccess = true);
-               
-                elsa.AddWorkflowsFrom<Program>(); 
+
+                elsa.AddWorkflowsFrom<Program>();
                 elsa.UseHttp();
                 // Register custom webhook definitions from the application, if any.
                 elsa.UseWebhooks(webhooks => webhooks.WebhookOptions = options => builder.Configuration.GetSection("Webhooks").Bind(options));
@@ -102,7 +102,7 @@ namespace MyWorkFlow
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-            } 
+            }
             // Configure web application's middleware pipeline.
             app.UseCors();
             app.UseRouting(); // Required for SignalR.

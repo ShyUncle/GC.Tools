@@ -53,6 +53,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WeChatHook", "WeChatHook\We
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AIConsoleApp", "AIConsoleApp\AIConsoleApp.csproj", "{D1853DD3-38F5-46C6-904D-49AD97287269}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "m3u8downloader", "m3u8downloader\m3u8downloader.csproj", "{FAA08B75-012E-4B85-9E56-D84223E067FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -363,6 +365,18 @@ Global
 		{D1853DD3-38F5-46C6-904D-49AD97287269}.Release|x64.Build.0 = Release|Any CPU
 		{D1853DD3-38F5-46C6-904D-49AD97287269}.Release|x86.ActiveCfg = Release|Any CPU
 		{D1853DD3-38F5-46C6-904D-49AD97287269}.Release|x86.Build.0 = Release|Any CPU
+		{FAA08B75-012E-4B85-9E56-D84223E067FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAA08B75-012E-4B85-9E56-D84223E067FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAA08B75-012E-4B85-9E56-D84223E067FE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FAA08B75-012E-4B85-9E56-D84223E067FE}.Debug|x64.Build.0 = Debug|Any CPU
+		{FAA08B75-012E-4B85-9E56-D84223E067FE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FAA08B75-012E-4B85-9E56-D84223E067FE}.Debug|x86.Build.0 = Debug|Any CPU
+		{FAA08B75-012E-4B85-9E56-D84223E067FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAA08B75-012E-4B85-9E56-D84223E067FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAA08B75-012E-4B85-9E56-D84223E067FE}.Release|x64.ActiveCfg = Release|Any CPU
+		{FAA08B75-012E-4B85-9E56-D84223E067FE}.Release|x64.Build.0 = Release|Any CPU
+		{FAA08B75-012E-4B85-9E56-D84223E067FE}.Release|x86.ActiveCfg = Release|Any CPU
+		{FAA08B75-012E-4B85-9E56-D84223E067FE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
