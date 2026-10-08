@@ -29,7 +29,7 @@ namespace MachineLearning
         }
         static void Main(string[] args)
         {
-            var src = Cv2.ImRead("1.png");
+            var src = Cv2.ImRead("2.png");
             var det = new Det(OcrVersionConfig.PpOcrV4);
             var rects = det.Run(src);
             Mat[] mats =

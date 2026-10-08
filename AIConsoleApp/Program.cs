@@ -5,9 +5,24 @@ namespace AIConsoleApp
 {
     internal class Program
     {
+        static void ColorConsoleWriteLine(string str,ConsoleColor consoleColor  )
+        {
+            var originalColor = Console.ForegroundColor;
+            Console.ForegroundColor = consoleColor; // 或其他颜色
+            Console.WriteLine(str);
+            Console.ForegroundColor = originalColor;
+        }
         static async Task Main(string[] args)
         {
             var apiKey = Environment.GetEnvironmentVariable("api-key");
+            if (string.IsNullOrEmpty(apiKey))
+            { 
+                ColorConsoleWriteLine("key不存在", ConsoleColor.Red); 
+            }
+            else
+            {
+                ColorConsoleWriteLine("key"+apiKey, ConsoleColor.Green);
+            }
             var endpoint = "https://dashscope.aliyuncs.com/compatible-mode/v1/";
             var modelName = "tongyi-xiaomi-analysis-pro";
 

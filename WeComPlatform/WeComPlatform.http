@@ -1,0 +1,6 @@
+@WeComPlatform_HostAddress = http://localhost:5110
+
+GET {{WeComPlatform_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
