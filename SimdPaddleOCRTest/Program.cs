@@ -12,7 +12,7 @@ namespace SimdPaddleOCRTest
         static async Task Main(string[] args)
         {
             using PaddleOcrAll ocr = await PaddleOcrAll.LoadAsync(ChineseV6MediumModels.Default);
-            using Image<Rgba32> image = await Image.LoadAsync<Rgba32>(CreateDecoderOptions(), "Imgs/2.png");
+            using Image<Rgba32> image = await Image.LoadAsync<Rgba32>(CreateDecoderOptions(), "Imgs/0.png");
             Rgba32[]? packedCopy = null;
             if (!image.DangerousTryGetSinglePixelMemory(out Memory<Rgba32> memory))
             {

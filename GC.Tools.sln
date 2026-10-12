@@ -27,8 +27,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityApi", "IdentityApi\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentitySPA", "IdentitySPA\IdentitySPA.csproj", "{35BF193B-899C-4708-B06E-439154CA760D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElasticSearchDemo", "ElasticSearchDemo\ElasticSearchDemo.csproj", "{DEBE5395-8AE3-429F-B4D5-9154F1AA17B5}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnowFlakeTest", "SnowFlakeTest\SnowFlakeTest.csproj", "{8DBB5A89-2251-4290-A2CD-0CB3B1307FB0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Selenium", "Selenium\Selenium.csproj", "{1267BCE5-2D33-4A64-B25A-DDB5BA248213}"
@@ -62,6 +60,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeComPlatform", "WeComPlatform\WeComPlatform.csproj", "{E5E3570D-3308-4B5F-A3A7-63FA53F97F4D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimdPaddleOCRTest", "SimdPaddleOCRTest\SimdPaddleOCRTest.csproj", "{4C85740B-D54A-4002-A172-4D9555F41CB5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElasticSearchDemo1", "ElasticSearchDemo1\ElasticSearchDemo1.csproj", "{B289A674-FC41-4731-B271-03E6C70CD062}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -217,18 +217,6 @@ Global
 		{35BF193B-899C-4708-B06E-439154CA760D}.Release|x64.Build.0 = Release|Any CPU
 		{35BF193B-899C-4708-B06E-439154CA760D}.Release|x86.ActiveCfg = Release|Any CPU
 		{35BF193B-899C-4708-B06E-439154CA760D}.Release|x86.Build.0 = Release|Any CPU
-		{DEBE5395-8AE3-429F-B4D5-9154F1AA17B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DEBE5395-8AE3-429F-B4D5-9154F1AA17B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DEBE5395-8AE3-429F-B4D5-9154F1AA17B5}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{DEBE5395-8AE3-429F-B4D5-9154F1AA17B5}.Debug|x64.Build.0 = Debug|Any CPU
-		{DEBE5395-8AE3-429F-B4D5-9154F1AA17B5}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{DEBE5395-8AE3-429F-B4D5-9154F1AA17B5}.Debug|x86.Build.0 = Debug|Any CPU
-		{DEBE5395-8AE3-429F-B4D5-9154F1AA17B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DEBE5395-8AE3-429F-B4D5-9154F1AA17B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DEBE5395-8AE3-429F-B4D5-9154F1AA17B5}.Release|x64.ActiveCfg = Release|Any CPU
-		{DEBE5395-8AE3-429F-B4D5-9154F1AA17B5}.Release|x64.Build.0 = Release|Any CPU
-		{DEBE5395-8AE3-429F-B4D5-9154F1AA17B5}.Release|x86.ActiveCfg = Release|Any CPU
-		{DEBE5395-8AE3-429F-B4D5-9154F1AA17B5}.Release|x86.Build.0 = Release|Any CPU
 		{8DBB5A89-2251-4290-A2CD-0CB3B1307FB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8DBB5A89-2251-4290-A2CD-0CB3B1307FB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DBB5A89-2251-4290-A2CD-0CB3B1307FB0}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -421,6 +409,18 @@ Global
 		{4C85740B-D54A-4002-A172-4D9555F41CB5}.Release|x64.Build.0 = Release|Any CPU
 		{4C85740B-D54A-4002-A172-4D9555F41CB5}.Release|x86.ActiveCfg = Release|Any CPU
 		{4C85740B-D54A-4002-A172-4D9555F41CB5}.Release|x86.Build.0 = Release|Any CPU
+		{B289A674-FC41-4731-B271-03E6C70CD062}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B289A674-FC41-4731-B271-03E6C70CD062}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B289A674-FC41-4731-B271-03E6C70CD062}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B289A674-FC41-4731-B271-03E6C70CD062}.Debug|x64.Build.0 = Debug|Any CPU
+		{B289A674-FC41-4731-B271-03E6C70CD062}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B289A674-FC41-4731-B271-03E6C70CD062}.Debug|x86.Build.0 = Debug|Any CPU
+		{B289A674-FC41-4731-B271-03E6C70CD062}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B289A674-FC41-4731-B271-03E6C70CD062}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B289A674-FC41-4731-B271-03E6C70CD062}.Release|x64.ActiveCfg = Release|Any CPU
+		{B289A674-FC41-4731-B271-03E6C70CD062}.Release|x64.Build.0 = Release|Any CPU
+		{B289A674-FC41-4731-B271-03E6C70CD062}.Release|x86.ActiveCfg = Release|Any CPU
+		{B289A674-FC41-4731-B271-03E6C70CD062}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

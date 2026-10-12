@@ -22,6 +22,9 @@
     <None Update="2.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="PaddleOCR\1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="PaddleOCR\chinese_cht_dict.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
