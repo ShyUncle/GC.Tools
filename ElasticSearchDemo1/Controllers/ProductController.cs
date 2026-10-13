@@ -154,7 +154,10 @@ namespace ElasticSearchDemo1.Controllers
             {
                 await CreateChineseIndexAsync();
             }
-
+            else
+            {
+                return;
+            }
 
             //批量创建索引
             var list = GenerateChineseProducts(10000);
