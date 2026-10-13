@@ -295,7 +295,6 @@ namespace ElasticSearchDemo1.Controllers
             {
                 return new List<Product>();
             }
-            Console.WriteLine(response.Total);
             return new { items = response.Documents.ToList(), total = response.Total };
         }
         [HttpDelete("{id}")]

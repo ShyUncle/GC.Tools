@@ -38,14 +38,22 @@ namespace AIConsoleApp
             //await using var mcpClient = await McpClient.CreateAsync(transport);
             //var mcpTools = await mcpClient.ListToolsAsync();
 
-            var httpTransport = new HttpClientTransport(new HttpClientTransportOptions
-            {
-                Endpoint = new Uri("https://localhost:7259/mcp"),
-                TransportMode = HttpTransportMode.StreamableHttp,
-            });
 
-            await using var httpClient = await McpClient.CreateAsync(httpTransport);
-            var httpTools = await httpClient.ListToolsAsync();
+            IList<McpClientTool> httpTools = null;
+            try
+            {
+                var httpTransport = new HttpClientTransport(new HttpClientTransportOptions
+                {
+                    Endpoint = new Uri("https://localhost:7259/mcp"),
+                    TransportMode = HttpTransportMode.StreamableHttp,
+                });
+                await using var httpClient = await McpClient.CreateAsync(httpTransport);
+                httpTools = await httpClient.ListToolsAsync();
+            }
+            catch (Exception ex)
+            {
+                ColorConsoleWriteLine($"连接MCP Server失败: {ex.Message}", ConsoleColor.Red);
+            }
             //tools
             var queryProducts = AIFunctionFactory.Create(
                     async (
@@ -73,15 +81,19 @@ namespace AIConsoleApp
             //{
             //     options.Tools.Add(item);
             //}
-            foreach (var item in httpTools)
+            if (httpTools != null)
             {
-                options.Tools.Add(item);
+                foreach (var item in httpTools)
+                {
+                    options.Tools.Add(item);
+                }
             }
             var client = new OpenAIClient(new ApiKeyCredential(apiKey), new OpenAIClientOptions { Endpoint = new Uri(endpoint) }).GetChatClient(modelName).AsIChatClient();
+            var summaryClient = new OpenAIClient(new ApiKeyCredential(apiKey), new OpenAIClientOptions { Endpoint = new Uri(endpoint) }).GetChatClient(modelName).AsIChatClient();
 
 
             //自动调用
-            client = new ChatClientBuilder(client).UseFunctionInvocation(configure: client =>
+            client = new ChatClientBuilder(client).UseChatReducer(new CustomSummarizingReducer(summaryClient, keepRecent: 20, triggerThreshold: 20)).UseFunctionInvocation(configure: client =>
             {
                 client.FunctionInvoker = async (context, cancellationToken) =>
                 {
@@ -111,10 +123,11 @@ namespace AIConsoleApp
                 {
                     if (content is TextReasoningContent reasoning)
                     {
-                        Console.WriteLine("\n🧠 [模型思考过程]");
-                        Console.WriteLine(reasoning.Text);
+                        ColorConsoleWriteLine("🧠模型思考过程：", ConsoleColor.Cyan);
+                        ColorConsoleWriteLine(reasoning.Text, ConsoleColor.Cyan);
                     }
                 }
+                ColorConsoleWriteLine($"输入{res.Usage.InputTokenCount},输出Token:{res.Usage.OutputTokenCount}, 总token数：{res.Usage.TotalTokenCount}", ConsoleColor.Yellow);
                 Console.WriteLine("结果：" + res.Text);
             }
         }
