@@ -23,7 +23,9 @@ namespace MQTTDEMO
             // ---------- 3) 业务循环 ----------
             using var cts = new CancellationTokenSource();
             Console.CancelKeyPress += (_, e) => { e.Cancel = true; cts.Cancel(); };
-            await StartConsumer(cts.Token);
+            await StartConsumer("后台1", cts.Token);
+            await Task.Delay(1000);
+            await StartConsumer("后台2", cts.Token);
             int seq = 0;
             try
             {
@@ -45,7 +47,7 @@ namespace MQTTDEMO
                         Payload = new ReadOnlySequence<byte>(Encoding.UTF8.GetBytes(Random.Shared.Next(2, 100).ToString())),
                         QualityOfServiceLevel = MqttQualityOfServiceLevel.AtLeastOnce,
                         Retain = false,
-                        
+
                     });
                     await Task.Delay(1000);
                 }
@@ -71,7 +73,7 @@ namespace MQTTDEMO
             _inbox.Writer.TryWrite(arg);
         }
 
-        private static async Task StartConsumer(CancellationToken cts)
+        private static async Task StartConsumer(string name, CancellationToken cts)
         {
             // 后台消费
             _ = Task.Run(async () =>
@@ -87,9 +89,9 @@ namespace MQTTDEMO
                                 var msg = arg.ApplicationMessage;
                                 var topic = msg.Topic;
                                 var payload = Encoding.UTF8.GetString(msg.Payload.ToArray());
-                                await Task.Delay(3000);
+                                await Task.Delay(2000);
                                 await arg.AcknowledgeAsync(cts);
-                                Console.WriteLine($"{payload}消息已处理");
+                                Console.WriteLine($"{payload}消息已处理,处理器：{name}");
                             }
                         }
                         catch (Exception e)
