@@ -1,0 +1,358 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:m3u8downloader.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1040" d:DesignHeight="720"
+        x:Class="m3u8downloader.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="M3U8 视频下载器"
+        Width="1040" Height="720" MinWidth="900" MinHeight="620"
+        WindowStartupLocation="CenterScreen"
+        Background="#F2F4F8"
+        FontFamily="Microsoft YaHei UI, Inter, Segoe UI, sans-serif">
+
+    <Design.DataContext>
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+    <Window.Styles>
+        <Style Selector="Border.card">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="Padding" Value="18" />
+            <Setter Property="BoxShadow" Value="0 2 12 0 #1416263D" />
+            <Setter Property="Margin" Value="0,0,0,14" />
+        </Style>
+        <Style Selector="TextBlock.label">
+            <Setter Property="Foreground" Value="#7A8399" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Margin" Value="0,10,0,5" />
+        </Style>
+        <Style Selector="TextBox">
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="MinHeight" Value="36" />
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button.accent">
+            <Setter Property="Background" Value="#4F6BED" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button.accent:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#3E59D9" />
+        </Style>
+        <Style Selector="Button.accent:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="#3449BE" />
+        </Style>
+        <Style Selector="Button.ghost">
+            <Setter Property="Background" Value="#F1F3F9" />
+            <Setter Property="Foreground" Value="#4A5270" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="11,5" />
+            <Setter Property="MinHeight" Value="28" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button.ghost:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#E2E8F7" />
+        </Style>
+        <Style Selector="Button.ghost:disabled">
+            <Setter Property="Opacity" Value="0.45" />
+        </Style>
+        <Style Selector="Button.ghost.danger">
+            <Setter Property="Foreground" Value="#D64550" />
+        </Style>
+        <Style Selector="Border.badge">
+            <Setter Property="Background" Value="#EDF0F6" />
+            <Setter Property="CornerRadius" Value="5" />
+            <Setter Property="Padding" Value="8,3" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Border.badge TextBlock">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="#6B7280" />
+        </Style>
+        <Style Selector="Border.badge.running">
+            <Setter Property="Background" Value="#E7F0FF" />
+        </Style>
+        <Style Selector="Border.badge.running TextBlock">
+            <Setter Property="Foreground" Value="#2F6FED" />
+        </Style>
+        <Style Selector="Border.badge.completed">
+            <Setter Property="Background" Value="#E4F6EC" />
+        </Style>
+        <Style Selector="Border.badge.completed TextBlock">
+            <Setter Property="Foreground" Value="#12915B" />
+        </Style>
+        <Style Selector="Border.badge.failed">
+            <Setter Property="Background" Value="#FDEBEC" />
+        </Style>
+        <Style Selector="Border.badge.failed TextBlock">
+            <Setter Property="Foreground" Value="#D64550" />
+        </Style>
+        <Style Selector="Border.badge.paused">
+            <Setter Property="Background" Value="#FFF3DF" />
+        </Style>
+        <Style Selector="Border.badge.paused TextBlock">
+            <Setter Property="Foreground" Value="#B7791F" />
+        </Style>
+        <Style Selector="Border.badge.live">
+            <Setter Property="Background" Value="#F0E9FF" />
+        </Style>
+        <Style Selector="Border.badge.live TextBlock">
+            <Setter Property="Foreground" Value="#7B4BD1" />
+        </Style>
+        <Style Selector="Button.ghost.stop">
+            <Setter Property="Foreground" Value="#7B4BD1" />
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="Auto,*,Auto" Margin="24,18,24,14">
+        <!-- 顶部标题 -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="12" Margin="2,0,0,16">
+            <Border Width="42" Height="42" CornerRadius="11" Background="#4F6BED">
+                <TextBlock Text="▶" Foreground="White" FontSize="16"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,0,0,0" />
+            </Border>
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="M3U8 视频下载器" FontSize="19" FontWeight="Bold" Foreground="#1B2138" />
+                <TextBlock Text="多任务并发 · 断点续传 · AES-128/192/256 解密 · 直播录制 · 代理 · JS 页面渲染抓取"
+                           FontSize="11" Foreground="#8A91A5" Margin="0,2,0,0" />
+            </StackPanel>
+        </StackPanel>
+
+        <!-- 主体：左侧设置，右侧任务列表 -->
+        <Grid Grid.Row="1" ColumnDefinitions="340,*">
+            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Padding="0,0,12,0">
+                <StackPanel>
+                    <Border Classes="card">
+                        <StackPanel>
+                            <TextBlock Text="视频地址" Classes="label" Margin="0,0,0,5" />
+                            <TextBox Text="{Binding UrlText}"
+                                     PlaceholderText="每行一个地址（可批量），支持 m3u8 直链或视频网页"
+                                     TextWrapping="Wrap" AcceptsReturn="True" Height="72"
+                                     VerticalContentAlignment="Top" />
+                            <TextBlock Text="{Binding HintText}" IsVisible="{Binding HasHint}"
+                                       Foreground="#D64550" FontSize="11" Margin="2,6,0,0" />
+                            <Button Classes="accent" Content="＋  添加下载任务" Margin="0,12,0,0"
+                                    HorizontalAlignment="Stretch" Command="{Binding AddTaskCommand}" />
+                            <Button Classes="ghost" Content="{Binding ProbeButtonText}" Margin="0,8,0,0"
+                                    HorizontalAlignment="Stretch" Command="{Binding ProbePageCommand}" />
+                            <TextBlock Text="{Binding ProbeStatus}" FontSize="10.5" Foreground="#6B74A8"
+                                       Margin="0,7,0,0" TextWrapping="Wrap" />
+                            <ScrollViewer MaxHeight="210" VerticalScrollBarVisibility="Auto"
+                                          IsVisible="{Binding HasProbeResults}" Margin="0,8,0,0">
+                                <ItemsControl ItemsSource="{Binding ProbeResults}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:ProbeResultViewModel">
+                                            <Border Background="#F3F5FF" CornerRadius="8" Padding="9,7"
+                                                    Margin="0,0,0,6" BorderBrush="#E2E7FB" BorderThickness="1">
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                                        <TextBlock Text="{Binding DisplayUrl}" FontSize="10"
+                                                                   Foreground="#333C60" TextTrimming="CharacterEllipsis"
+                                                                   ToolTip.Tip="{Binding Url}" />
+                                                        <TextBlock Text="{Binding DetailText}" FontSize="9.5"
+                                                                   Foreground="#9098B4" Margin="0,3,0,0" />
+                                                    </StackPanel>
+                                                    <Button Grid.Column="1" Classes="ghost" Content="使用"
+                                                            Command="{Binding UseCommand}" VerticalAlignment="Center" />
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="card">
+                        <StackPanel>
+                            <TextBlock Text="保存设置" FontSize="14" FontWeight="SemiBold" Foreground="#1B2138" />
+                            <TextBlock Text="保存目录" Classes="label" />
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBox Grid.Column="0" Text="{Binding SaveDirectory}" FontSize="11" />
+                                <Button Grid.Column="1" Classes="ghost" Content="浏览"
+                                        Margin="8,0,0,0" Click="OnBrowseFolder" />
+                            </Grid>
+                            <TextBlock Text="文件名（留空自动生成）" Classes="label" />
+                            <TextBox Text="{Binding FileName}" PlaceholderText="例如：我的视频.mp4" />
+
+                            <Border Height="1" Background="#EDF0F7" Margin="0,14,0,0" />
+                            <Grid ColumnDefinitions="*,Auto" Margin="0,10,0,0">
+                                <TextBlock Grid.Column="0" Text="{Binding CacheSizeText}" FontSize="11"
+                                           Foreground="#8A91A5" VerticalAlignment="Center" />
+                                <Button Grid.Column="1" Classes="ghost" Content="清理缓存"
+                                        Command="{Binding CleanupCacheCommand}" />
+                            </Grid>
+
+                            <Expander Header="高级设置 · 适配防盗链网站" Margin="0,14,0,0"
+                                      HorizontalAlignment="Stretch">
+                                <StackPanel Margin="0,8,0,0">
+                                    <TextBlock Text="Referer" Classes="label" Margin="0,0,0,5" />
+                                    <TextBox Text="{Binding RefererText}" PlaceholderText="https://www.example.com/" FontSize="11" />
+                                    <TextBlock Text="User-Agent" Classes="label" />
+                                    <TextBox Text="{Binding UserAgentText}" FontSize="11" TextWrapping="Wrap" />
+                                    <TextBlock Text="自定义请求头（每行 Key: Value）" Classes="label" />
+                                    <TextBox Text="{Binding CustomHeadersText}" AcceptsReturn="True"
+                                             TextWrapping="Wrap" Height="68" FontSize="11"
+                                             PlaceholderText="Cookie: xxx&#xA;Origin: https://..." />
+                                    <TextBlock Text="分段并发数（建议 8–16，过高可能被限流）" Classes="label" />
+                                    <NumericUpDown Value="{Binding Concurrency}" Minimum="1" Maximum="32"
+                                                   Increment="1" FormatString="0" MinHeight="34" />
+                                    <CheckBox Content="合并后自动转 MP4（需系统安装 ffmpeg）"
+                                              IsChecked="{Binding AutoRemux}" Margin="0,12,0,0" FontSize="11" />
+
+                                    <Border Height="1" Background="#EDF0F7" Margin="0,14,0,0" />
+                                    <TextBlock Text="代理设置" FontWeight="SemiBold" FontSize="12"
+                                               Foreground="#3B435E" Margin="0,12,0,6" />
+                                    <ComboBox SelectedIndex="{Binding ProxyModeIndex}" MinHeight="34"
+                                              HorizontalAlignment="Stretch">
+                                        <ComboBoxItem Content="不使用代理（直连）" />
+                                        <ComboBoxItem Content="HTTP / HTTPS 代理" />
+                                        <ComboBoxItem Content="SOCKS5 代理" />
+                                    </ComboBox>
+                                    <Grid ColumnDefinitions="*,76" Margin="0,8,0,0"
+                                          IsEnabled="{Binding IsProxyConfigured}">
+                                        <TextBox Grid.Column="0" Text="{Binding ProxyHost}"
+                                                 PlaceholderText="代理地址" FontSize="11" />
+                                        <TextBox Grid.Column="1" Text="{Binding ProxyPort}"
+                                                 PlaceholderText="端口" Margin="8,0,0,0" FontSize="11" />
+                                    </Grid>
+                                    <Grid ColumnDefinitions="*,*" Margin="0,8,0,0"
+                                          IsEnabled="{Binding IsProxyConfigured}">
+                                        <TextBox Grid.Column="0" Text="{Binding ProxyUsername}"
+                                                 PlaceholderText="账号（可选）" FontSize="11" />
+                                        <TextBox Grid.Column="1" Text="{Binding ProxyPassword}"
+                                                 PlaceholderText="密码（可选）" PasswordChar="●"
+                                                 Margin="8,0,0,0" FontSize="11" />
+                                    </Grid>
+                                    <TextBlock Text="所有分片与密钥请求都会走代理；SOCKS5 由 .NET 原生支持"
+                                               FontSize="10" Foreground="#A2A9BC" TextWrapping="Wrap"
+                                               Margin="0,6,0,0" />
+
+                                    <Border Height="1" Background="#EDF0F7" Margin="0,14,0,0" />
+                                    <TextBlock Text="JS 页面解析（浏览器渲染）" FontWeight="SemiBold" FontSize="12"
+                                               Foreground="#3B435E" Margin="0,12,0,6" />
+                                    <CheckBox Content="静态解析失败时自动用浏览器渲染"
+                                              IsChecked="{Binding BrowserSniffEnabled}" FontSize="11" />
+                                    <TextBlock Text="监听时长（秒）· 建议 10–20" Classes="label" />
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <NumericUpDown Grid.Column="0" Value="{Binding BrowserWaitSeconds}"
+                                                       Minimum="3" Maximum="120" Increment="1"
+                                                       FormatString="0" MinHeight="34" />
+                                        <Button Grid.Column="1" Classes="ghost" Content="清除登录数据"
+                                                Margin="8,0,0,0" Command="{Binding ClearBrowserDataCommand}" />
+                                    </Grid>
+                                    <CheckBox Content="有头模式（需登录 / 手动播放时勾选）"
+                                              IsChecked="{Binding BrowserHeaded}" Margin="0,10,0,0" FontSize="11" />
+                                    <TextBlock Text="浏览器路径（留空自动查找 Chrome / Edge）" Classes="label" />
+                                    <TextBox Text="{Binding BrowserPath}" PlaceholderText="自动查找" FontSize="11" />
+                                    <TextBlock Text="监听页面全部网络请求，捕获 JS 动态生成的 m3u8 及其 Cookie / Referer；有头模式共用同一份登录态，点「探测页面」可直接看到候选地址。"
+                                               FontSize="10" Foreground="#A2A9BC" TextWrapping="Wrap"
+                                               Margin="0,7,0,0" />
+                                </StackPanel>
+                            </Expander>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <Border Grid.Column="1" Classes="card" Margin="2,0,0,14" Padding="18,16">
+                <Grid RowDefinitions="Auto,*">
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,12">
+                        <TextBlock Grid.Column="0" Text="下载列表" FontSize="14"
+                                   FontWeight="SemiBold" Foreground="#1B2138" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="{Binding TaskCountText}" FontSize="11"
+                                   Foreground="#8A91A5" VerticalAlignment="Center" Margin="0,0,10,0" />
+                        <Button Grid.Column="2" Classes="ghost" Content="清空已完成"
+                                Command="{Binding ClearCompletedCommand}" />
+                    </Grid>
+
+                    <Panel Grid.Row="1">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding Tasks}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:DownloadItemViewModel">
+                                        <Border Background="#F7F8FC" CornerRadius="10" Padding="14,12"
+                                                Margin="0,0,0,10" BorderBrush="#EDF0F7" BorderThickness="1">
+                                            <Grid ColumnDefinitions="*,Auto">
+                                                <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                                        <TextBlock Text="{Binding DisplayFileName}" FontWeight="SemiBold"
+                                                                   FontSize="12" Foreground="#252B3D"
+                                                                   TextTrimming="CharacterEllipsis" MaxWidth="340" />
+                                                        <Border Classes="badge"
+                                                                Classes.running="{Binding IsRunning}"
+                                                                Classes.paused="{Binding IsPaused}"
+                                                                Classes.failed="{Binding IsFailed}"
+                                                                Classes.completed="{Binding IsCompleted}"
+                                                                Classes.live="{Binding IsLiveActive}">
+                                                            <TextBlock Text="{Binding StateText}" />
+                                                        </Border>
+                                                    </StackPanel>
+                                                    <TextBlock Text="{Binding Url}" FontSize="10"
+                                                               Foreground="#A2A9BC" Margin="0,4,0,0"
+                                                               TextTrimming="CharacterEllipsis" />
+                                                    <ProgressBar Minimum="0" Maximum="100"
+                                                                 Value="{Binding ProgressPercent}"
+                                                                 IsIndeterminate="{Binding IsIndeterminate}"
+                                                                 Height="6" MinHeight="6" Margin="0,10,0,0"
+                                                                 Background="#E7EBF3" Foreground="#4F6BED" />
+                                                    <TextBlock Text="{Binding InfoText}" FontSize="10.5"
+                                                               Foreground="#77809A" Margin="0,6,0,0"
+                                                               TextTrimming="CharacterEllipsis" />
+                                                    <TextBlock Text="{Binding LocationText}" FontSize="10"
+                                                               Foreground="#98A0B5" Margin="0,3,0,0"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               ToolTip.Tip="{Binding LocationText}" />
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6"
+                                                            VerticalAlignment="Center">
+                                                    <Button Classes="ghost" Content="{Binding PauseResumeText}"
+                                                            Command="{Binding PauseResumeCommand}"
+                                                            IsEnabled="{Binding CanPauseResume}" />
+                                                    <Button Classes="ghost stop" Content="停止并保存"
+                                                            IsVisible="{Binding IsLive}"
+                                                            Command="{Binding FinishRecordingCommand}" />
+                                                    <Button Classes="ghost" Content="位置"
+                                                            Command="{Binding OpenFolderCommand}" />
+                                                    <Button Classes="ghost" Content="缓存"
+                                                            Command="{Binding OpenCacheCommand}" />
+                                                    <Button Classes="ghost danger" Content="移除"
+                                                            Command="{Binding RemoveCommand}" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+
+                        <TextBlock Text="暂无下载任务，粘贴视频链接开始吧"
+                                   IsVisible="{Binding IsEmpty}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Foreground="#A5ACC0" FontSize="13" />
+                    </Panel>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- 底部提示 -->
+        <TextBlock Grid.Row="2" Margin="2,0,0,0" FontSize="11" Foreground="#9AA1B4"
+                   Text="提示：粘贴视频网页地址时，先静态解析页面与外部 JS，找不到再用真实浏览器渲染并监听视频请求；需要登录的站点请勾选「有头模式」并点「探测页面」手动播放一次。每个任务独占一层文件夹，缓存即用即删。「移除」只清缓存，不会删除成品。" />
+    </Grid>
+</Window>
