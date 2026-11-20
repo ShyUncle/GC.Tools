@@ -22,8 +22,15 @@ public class TrayController : IDisposable
     private const uint NIF_INFO = 0x10;
     private const int NIIF_INFO = 0x1;
 
-    // 托盘回调消息（WM_APP 区段，避免与框架消息冲突）
+    // 托盘消息（WM_APP 区段，避免与框架消息冲突）
     private const int WM_APP_TRAY = 0x8001;
+
+    /// <summary>
+    /// Explorer 重启时系统广播 TaskbarCreated：所有托盘图标被移除，
+    /// 程序必须收到此消息后重新添加图标，否则进程仍在但托盘消失。
+    /// 该消息 ID 由 RegisterWindowMessage 注册，每次登录会话不同，须运行时获取。
+    /// </summary>
+    private static readonly uint WmTaskbarCreated = RegisterWindowMessageW("TaskbarCreated");
 
     private const int WM_LBUTTONDBLCLK = 0x0203;
     private const int WM_RBUTTONUP = 0x0205;
@@ -216,6 +223,37 @@ public class TrayController : IDisposable
         _iconVisible = false;
     }
 
+    /// <summary>
+    /// Explorer 重启后重建托盘图标：立即尝试一次；若失败（Explorer 尚未就绪）
+    /// 则后台每秒重试，最多 5 次（Shell_NotifyIcon 可跨线程调用，不占用 UI 线程）。
+    /// </summary>
+    private void ReaddTrayIconWithRetry()
+    {
+        if (!_windowCreated)
+            return;
+
+        _iconVisible = false;
+        AddTrayIcon();
+        if (_iconVisible)
+            return;
+
+        _ = Task.Run(async () =>
+        {
+            for (var attempt = 0; attempt < 5 && !_iconVisible; attempt++)
+            {
+                try
+                {
+                    await Task.Delay(1000).ConfigureAwait(false);
+                    AddTrayIcon();
+                }
+                catch
+                {
+                    // 重试失败继续下一轮
+                }
+            }
+        });
+    }
+
     // ---------- Win32 原生右键菜单 ----------
 
     /// <summary>在光标位置弹出原生菜单，整体位置略高于光标（上移 MenuVerticalOffsetDip）。</summary>
@@ -350,10 +388,19 @@ public class TrayController : IDisposable
 
     private static IntPtr WndProc(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam)
     {
-        if (_current != null && msg == WM_APP_TRAY)
+        if (_current == null)
+            return DefWindowProcW(hWnd, msg, wParam, lParam);
+
+        if (msg == WM_APP_TRAY)
         {
             _current.HandleTrayMessage(lParam.ToInt32());
             return IntPtr.Zero;
+        }
+
+        // Explorer 重启后重新添加托盘图标（图标被系统移除，需 NIM_ADD 重建）
+        if (msg == (int)WmTaskbarCreated && WmTaskbarCreated != 0)
+        {
+            _current.ReaddTrayIconWithRetry();
         }
 
         return DefWindowProcW(hWnd, msg, wParam, lParam);
@@ -426,8 +473,11 @@ public class TrayController : IDisposable
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool PostMessageW(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
-    [DllImport("user32.dll")]
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
     private static extern uint GetDpiForWindow(IntPtr hwnd);
+
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+    private static extern uint RegisterWindowMessageW(string lpString);
 
     [DllImport("user32.dll", CharSet = CharSet.Unicode)]
     private static extern IntPtr LoadIconW(IntPtr hInstance, IntPtr lpIconName);

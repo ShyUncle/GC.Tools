@@ -72,8 +72,6 @@ public partial class MainWindow : Window
         // 需要释放空间时在「设置 → 存储 → 预览缓存」手动清理。
 
         MergeOnline(); // 注册在线分页缓存（含收藏状态同步），替代单独的 _library.Load()
-        RefreshCategoryChips();
-        RefreshCards();
 
         // 壁纸的启动恢复由 WallpaperManager.Show() 统一处理：
         // 有上次壁纸就自动恢复，没有则不接管桌面、保持系统原壁纸可见。
@@ -98,6 +96,12 @@ public partial class MainWindow : Window
             OnExit);
 
         _uiReady = true;
+
+        // 显式进入默认页（静态壁纸）：NavStatic 在 XAML 中即选中态，Checked 事件
+        // 早在初始化阶段触发时被 _uiReady 拦截，且已选中后再次点击不会再触发，
+        // 不主动 SwitchPage 会导致分类条不显示、第 1 页内容不加载。
+        SwitchPage(_page);
+
         SyncSettingsUi();
 
         // 轮换范围从配置恢复（一级范围 + 二级分类），并同步到管理器
