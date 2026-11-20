@@ -1,0 +1,906 @@
+<Window x:Class="DynamicWallpaper.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:DynamicWallpaper"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        xmlns:vwp="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel"
+        Title="静态壁纸"
+        Width="1125" Height="732" MinWidth="860" MinHeight="540"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None" ResizeMode="CanResize"
+        AllowsTransparency="True" Background="Transparent"
+        Icon="pack://application:,,,/app.ico"
+        FontFamily="Microsoft YaHei UI" FontSize="13"
+        UseLayoutRounding="True"
+        TextOptions.TextFormattingMode="Ideal">
+
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="56" ResizeBorderThickness="6"
+                            GlassFrameThickness="0" CornerRadius="16"
+                            UseAeroCaptionButtons="False"/>
+    </shell:WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="SurfaceBrush" Color="White"/>
+        <SolidColorBrush x:Key="BorderBrush" Color="#E5EAF2"/>
+        <SolidColorBrush x:Key="TextPrimaryBrush" Color="#1E293B"/>
+        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#64748B"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="#4F6BF5"/>
+        <SolidColorBrush x:Key="AccentHoverBrush" Color="#3B57E0"/>
+        <SolidColorBrush x:Key="AccentSoftBrush" Color="#EEF1FE"/>
+
+        <LinearGradientBrush x:Key="AccentGradientBrush" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="#6366F1" Offset="0"/>
+            <GradientStop Color="#3B82F6" Offset="1"/>
+        </LinearGradientBrush>
+
+        <!-- 窗口外边框：蓝紫渐变描边 -->
+        <LinearGradientBrush x:Key="WindowBorderBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#8B9CF7" Offset="0"/>
+            <GradientStop Color="#5EA0F5" Offset="1"/>
+        </LinearGradientBrush>
+
+        <!-- 顶部横向菜单胶囊 -->
+        <Style x:Key="NavPill" TargetType="RadioButton">
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="FontSize" Value="13.5" />
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="bd" CornerRadius="9" Padding="18,7" Background="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{StaticResource AccentSoftBrush}"/>
+                                <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{StaticResource AccentGradientBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 分类筛选胶囊 -->
+        <Style x:Key="FilterChip" TargetType="RadioButton">
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="bd" CornerRadius="14" Padding="15,6" Background="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{StaticResource AccentSoftBrush}"/>
+                                <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{StaticResource AccentSoftBrush}"/>
+                                <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 图标按钮（设置/窗口控制） -->
+        <Style x:Key="IconButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="Width" Value="36"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#E9EDF5"/>
+                                <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 窗口关闭按钮（悬停变红） -->
+        <Style x:Key="CloseButton" TargetType="Button" BasedOn="{StaticResource IconButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="Transparent" CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#E81123"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 普通小按钮 -->
+        <Style x:Key="Btn" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1" CornerRadius="7">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{StaticResource AccentSoftBrush}"/>
+                                <Setter TargetName="bd" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+                                <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#DDE4FA"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="bd" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 主操作按钮 -->
+        <Style x:Key="PrimaryBtn" TargetType="Button" BasedOn="{StaticResource Btn}">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Background" Value="{StaticResource AccentGradientBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1" CornerRadius="7">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{StaticResource AccentHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#2E43B8"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="bd" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 输入框 -->
+        <Style x:Key="Input" TargetType="TextBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <!-- 开关 -->
+        <Style x:Key="Switch" TargetType="CheckBox">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Grid Width="46" Height="26">
+                            <Border x:Name="track" CornerRadius="13" Background="#C9D2E0"/>
+                            <Border x:Name="thumb" Width="20" Height="20" CornerRadius="10"
+                                    Background="White" VerticalAlignment="Center"
+                                    HorizontalAlignment="Left" Margin="3,0,0,0"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="track" Property="Background" Value="{StaticResource AccentBrush}"/>
+                                <Setter TargetName="thumb" Property="HorizontalAlignment" Value="Right"/>
+                                <Setter TargetName="thumb" Property="Margin" Value="0,0,3,0"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="track" Property="Opacity" Value="0.85"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 我的页左侧竖排分类项 -->
+        <Style x:Key="MineNavItem" TargetType="RadioButton">
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="FontSize" Value="13.5"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Margin" Value="4,3"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="bd" CornerRadius="8" Padding="14,9" Background="Transparent">
+                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{StaticResource AccentSoftBrush}"/>
+                                <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{StaticResource AccentGradientBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 壁纸卡片：整图铺满 + 标题浮层 + 悬停操作 -->
+        <DataTemplate x:Key="CardTemplate">
+            <Border x:Name="Card" Width="252" Height="180" Margin="7" CornerRadius="12"
+                    Background="#1B2230" Cursor="Hand"
+                    BorderBrush="Transparent" BorderThickness="1.5"
+                    MouseLeftButtonUp="OnCardClick"
+                    ContextMenuOpening="OnCardContextMenuOpening">
+                <Border.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="从壁纸库删除" IsEnabled="{Binding IsImported}" Click="OnDeleteImported"/>
+                    </ContextMenu>
+                </Border.ContextMenu>
+                <Grid>
+                    <!-- 缩略图铺满整卡 -->
+                    <Border x:Name="ImageHost" CornerRadius="12">
+                        <Border.Background>
+                            <ImageBrush ImageSource="{Binding Thumbnail}" Stretch="UniformToFill"/>
+                        </Border.Background>
+                    </Border>
+
+                    <!-- 顶部渐变压暗 + 标题 + 收藏 -->
+                    <Border CornerRadius="12,12,0,0" Height="64" VerticalAlignment="Top">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="#9911182A" Offset="0"/>
+                                <GradientStop Color="#0011182A" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Grid>
+                            <TextBlock Text="{Binding DisplayName}" Margin="13,9,40,0"
+                                       Foreground="White" FontSize="12.5" FontWeight="Bold"
+                                       TextTrimming="CharacterEllipsis" VerticalAlignment="Top"
+                                       ToolTip="{Binding DisplayName}"/>
+                            <Button HorizontalAlignment="Right" VerticalAlignment="Top"
+                                    Margin="0,7,9,0" Width="26" Height="26" Click="OnFavClick"
+                                    Cursor="Hand" Focusable="False">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Grid Background="Transparent">
+                                            <TextBlock x:Name="star" FontFamily="Segoe MDL2 Assets"
+                                                       FontSize="14" Foreground="White"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                       Text="&#xE734;"/>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding IsFavorite}" Value="True">
+                                                <Setter TargetName="star" Property="Text" Value="&#xE735;"/>
+                                                <Setter TargetName="star" Property="Foreground" Value="#FFC53D"/>
+                                            </DataTrigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <!-- 底部渐变压暗 -->
+                    <Border CornerRadius="0,0,12,12" Height="56" VerticalAlignment="Bottom">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="#0011182A" Offset="0"/>
+                                <GradientStop Color="#9911182A" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                    </Border>
+
+                    <!-- 底部角标：视频 -->
+                    <Border HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="11,0,0,11"
+                            CornerRadius="6" Background="#B310182C" Padding="7,3"
+                            Visibility="{Binding VideoBadgeVisibility}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                       Foreground="White" VerticalAlignment="Center" Margin="0,1,4,0"/>
+                            <TextBlock Text="视频" FontSize="11" Foreground="White"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 悬停「设为壁纸」 -->
+                    <Grid x:Name="ApplyWrap" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                          Margin="0,0,0,12">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsMouseOver, ElementName=Card}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <Button Height="32" MinWidth="104" Click="OnApplyFromCard"
+                                Style="{StaticResource PrimaryBtn}" Content="设为壁纸"/>
+                    </Grid>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <!-- 设置行：两列布局（左说明 / 右控件），高度随内容自适应 -->
+        <Style x:Key="SettingsRow" TargetType="Grid">
+            <Setter Property="MinHeight" Value="52"/>
+            <Setter Property="Margin" Value="2,4"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+    </Window.Resources>
+
+    <!-- 窗口根容器：椭圆化圆角 + 渐变彩色边框（最大化时由代码后台改为直角） -->
+    <Border x:Name="WindowRoot" Margin="10" CornerRadius="14"
+            BorderBrush="{StaticResource WindowBorderBrush}" BorderThickness="1.4"
+            Background="#F5F7FB">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="16" ShadowDepth="2" Direction="270"
+                              Opacity="0.28" Color="#334155"/>
+        </Border.Effect>
+        <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="56"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- ===== 顶部标题栏：logo + 横向菜单 + 搜索 + 设置 + 窗口控制 ===== -->
+        <Border x:Name="ChromeTopBorder" Grid.Row="0" Background="White" BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1" CornerRadius="12,12,0,0">
+            <Grid Margin="16,0,0,0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <!-- Logo（应用图标） -->
+                    <Border Width="34" Height="34" CornerRadius="10">
+                        <Border.Background>
+                            <ImageBrush ImageSource="pack://application:,,,/app.ico" Stretch="Uniform"/>
+                        </Border.Background>
+                    </Border>
+                    <TextBlock Text="" FontSize="16" FontWeight="Bold"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               VerticalAlignment="Center" Margin="10,0,22,0"/>
+
+                    <!-- 横向菜单 -->
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <RadioButton x:Name="NavStatic" Content="静态壁纸" Style="{StaticResource NavPill}"
+                                     GroupName="Nav" IsChecked="True" Checked="OnNavStatic"/>
+                        <RadioButton x:Name="NavDynamic" Content="动态壁纸" Style="{StaticResource NavPill}"
+                                     GroupName="Nav" Checked="OnNavDynamic"/>
+                        <RadioButton x:Name="NavMine" Content="我的" Style="{StaticResource NavPill}"
+                                     GroupName="Nav" Checked="OnNavMine"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <!-- 搜索 -->
+                    <Grid Width="200" VerticalAlignment="Center" Margin="0,0,10,0"
+                          shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                        <TextBox x:Name="SearchBox" Style="{StaticResource Input}" KeyDown="OnSearchKeyDown"/>
+                        <TextBlock Text="搜索壁纸名称…" Foreground="#94A3B8" Margin="12,0,0,0"
+                                   VerticalAlignment="Center" IsHitTestVisible="False">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+
+                    <!-- 设置入口 -->
+                    <RadioButton x:Name="NavSettings" GroupName="Nav" Checked="OnNavSettings"
+                                 Cursor="Hand" Focusable="False" VerticalAlignment="Center"
+                                 shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                        <RadioButton.Template>
+                            <ControlTemplate TargetType="RadioButton">
+                                <Border x:Name="bd" Width="36" Height="36" CornerRadius="8"
+                                        Background="Transparent">
+                                    <TextBlock x:Name="gear" Text="&#xE713;" FontFamily="Segoe MDL2 Assets"
+                                               FontSize="16" Foreground="{StaticResource TextSecondaryBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="bd" Property="Background" Value="#E9EDF5"/>
+                                        <Setter TargetName="gear" Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter TargetName="bd" Property="Background" Value="{StaticResource AccentSoftBrush}"/>
+                                        <Setter TargetName="gear" Property="Foreground" Value="{StaticResource AccentBrush}"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </RadioButton.Template>
+                    </RadioButton>
+
+                    <!-- 窗口控制 -->
+                    <Button Style="{StaticResource IconButton}" Width="46" Height="38"
+                            Click="OnMinimizeClick" Margin="12,0,0,0">
+                        <TextBlock Text="&#xE921;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
+                    </Button>
+                    <Button Style="{StaticResource CloseButton}" Width="46" Height="38"
+                            Click="OnCloseClick">
+                        <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ===== 分类筛选条（仅动态/静态页显示；「我的」页操作收进左侧边栏） ===== -->
+        <Border x:Name="ChipsBar" Grid.Row="1" Background="White" BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1" MinHeight="52" Visibility="Collapsed">
+            <DockPanel LastChildFill="False" Margin="16,0">
+                <StackPanel x:Name="CategoryChips" Orientation="Horizontal"
+                            VerticalAlignment="Center" DockPanel.Dock="Left"/>
+            </DockPanel>
+        </Border>
+
+        <!-- ===== 内容区：浏览 / 设置 ===== -->
+        <Grid Grid.Row="2">
+            <!-- 浏览面板 -->
+            <Grid x:Name="BrowsePanel">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="MineNavColumn" Width="0"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- 我的壁纸：左侧竖排分类 + 操作按钮 -->
+                <Border x:Name="MineNavPanel" Grid.Column="0" Visibility="Collapsed"
+                        Margin="14,12,8,12">
+                    <Border Background="White" CornerRadius="12" Padding="10"
+                            BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- 标题 -->
+                            <StackPanel Grid.Row="0" Margin="6,4,0,0">
+                                <TextBlock Text="我的壁纸库" FontSize="14" FontWeight="Bold"
+                                           Foreground="{StaticResource TextPrimaryBrush}"/>
+                                <TextBlock Text="收藏与上传的本地内容" FontSize="10.5"
+                                           Foreground="{StaticResource TextSecondaryBrush}" Margin="0,3,0,0"/>
+                            </StackPanel>
+
+                            <!-- 导航项 -->
+                            <StackPanel Grid.Row="1" Margin="0,12,0,0">
+                                <RadioButton Tag="fav" GroupName="MineNav" IsChecked="True"
+                                             Style="{StaticResource MineNavItem}"
+                                             Checked="OnMineNavChecked">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE735;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                   VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <TextBlock Text="我的收藏" VerticalAlignment="Center"/>
+                                        <Border CornerRadius="9" Background="#F1F4F9" Padding="8,2"
+                                                Margin="10,0,0,0" VerticalAlignment="Center">
+                                            <TextBlock x:Name="MineFavCountText" Text="0" FontSize="10.5"
+                                                       Foreground="{StaticResource TextSecondaryBrush}"/>
+                                        </Border>
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton Tag="uploads" GroupName="MineNav"
+                                             Style="{StaticResource MineNavItem}"
+                                             Checked="OnMineNavChecked">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                   VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <TextBlock Text="我的壁纸" VerticalAlignment="Center"/>
+                                        <Border CornerRadius="9" Background="#F1F4F9" Padding="8,2"
+                                                Margin="10,0,0,0" VerticalAlignment="Center">
+                                            <TextBlock x:Name="MineUploadCountText" Text="0" FontSize="10.5"
+                                                       Foreground="{StaticResource TextSecondaryBrush}"/>
+                                        </Border>
+                                    </StackPanel>
+                                </RadioButton>
+                            </StackPanel>
+
+                            <!-- 操作按钮（紧跟导航项，避免底部大片空白） -->
+                            <StackPanel Grid.Row="2" Margin="4,14,4,0">
+                                <Border Height="1" Background="#EEF1F6" Margin="0,0,0,12"/>
+                                <Button Style="{StaticResource PrimaryBtn}" Height="34"
+                                        HorizontalAlignment="Stretch" Click="OnImportImages" Margin="0,0,0,7">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE91B;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                   VerticalAlignment="Center" Margin="0,0,7,0"/>
+                                        <TextBlock Text="导入图片" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Style="{StaticResource Btn}" Height="34"
+                                        HorizontalAlignment="Stretch" Click="OnImportVideo" Margin="0,0,0,7">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE714;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                   VerticalAlignment="Center" Margin="0,0,7,0"
+                                                   Foreground="{StaticResource AccentBrush}"/>
+                                        <TextBlock Text="导入视频" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Style="{StaticResource Btn}" Height="34"
+                                        HorizontalAlignment="Stretch" Click="OnRefresh">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                   VerticalAlignment="Center" Margin="0,0,7,0"
+                                                   Foreground="{StaticResource AccentBrush}"/>
+                                        <TextBlock Text="刷新" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Border>
+
+                <Grid Grid.Column="1">
+                    <!-- 虚拟化卡片列表：只实例化视口内的卡片（累加清单可达数百条，必须虚拟化） -->
+                    <ListView x:Name="CardsList" ItemTemplate="{StaticResource CardTemplate}"
+                              BorderThickness="0" Background="Transparent"
+                              Padding="9" SelectionMode="Single"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              VirtualizingPanel.VirtualizationMode="Recycling"
+                              VirtualizingPanel.ScrollUnit="Pixel"
+                              ScrollViewer.ScrollChanged="OnCardsScrollChanged">
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <vwp:VirtualizingWrapPanel ItemSize="266,194" SpacingMode="None"/>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Focusable" Value="False"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListViewItem">
+                                            <ContentPresenter/>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
+                    <TextBlock x:Name="EmptyText" Text="壁纸库为空"
+                               Foreground="{StaticResource TextSecondaryBrush}" FontSize="14"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                               IsHitTestVisible="False">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasItems, ElementName=CardsList}" Value="False">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </Grid>
+            </Grid>
+
+            <!-- 设置面板 -->
+            <ScrollViewer x:Name="SettingsPanel" Visibility="Collapsed"
+                          VerticalScrollBarVisibility="Auto">
+                <StackPanel MaxWidth="680" HorizontalAlignment="Center" Margin="0,28,0,28">
+                    <TextBlock Text="设置" FontSize="22" FontWeight="Bold"
+                               Foreground="{StaticResource TextPrimaryBrush}" Margin="4,0,0,18"/>
+
+                    <!-- 通用 -->
+                    <Border Background="White" CornerRadius="12" Padding="20,6"
+                            BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="通用" FontSize="13" FontWeight="Bold"
+                                       Foreground="{StaticResource TextSecondaryBrush}" Margin="2,10,0,4"/>
+                            <Grid Style="{StaticResource SettingsRow}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,16,0">
+                                    <TextBlock Text="开机启动" FontSize="14" FontWeight="Medium"
+                                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="登录 Windows 后自动运行本程序"
+                                               FontSize="11.5" Foreground="{StaticResource TextSecondaryBrush}"
+                                               TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <CheckBox x:Name="AutoStartSwitch" Grid.Column="1"
+                                          Style="{StaticResource Switch}" VerticalAlignment="Center"
+                                          Checked="OnAutoStartToggled" Unchecked="OnAutoStartToggled"/>
+                            </Grid>
+                            <Grid Style="{StaticResource SettingsRow}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,16,0">
+                                    <TextBlock Text="关闭时最小化到托盘" FontSize="14" FontWeight="Medium"
+                                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="点击关闭按钮时隐藏窗口到系统托盘，壁纸继续生效"
+                                               FontSize="11.5" Foreground="{StaticResource TextSecondaryBrush}"
+                                               TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <CheckBox x:Name="TraySwitch" Grid.Column="1"
+                                          Style="{StaticResource Switch}" VerticalAlignment="Center"
+                                          Checked="OnTrayToggled" Unchecked="OnTrayToggled"/>
+                            </Grid> 
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 壁纸轮换 -->
+                    <Border Background="White" CornerRadius="12" Padding="20,6" Margin="0,16,0,0"
+                            BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="壁纸轮换" FontSize="13" FontWeight="Bold"
+                                       Foreground="{StaticResource TextSecondaryBrush}" Margin="2,10,0,4"/>
+ 
+                            <!-- 立即开启/暂停轮换 -->
+                            <Grid Style="{StaticResource SettingsRow}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,16,0">
+                                    <TextBlock Text="开启轮换" FontSize="14" FontWeight="Medium"
+                         Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="按下方设定的间隔与范围立即开始自动切换壁纸；关闭即暂停"
+                         FontSize="11.5" Foreground="{StaticResource TextSecondaryBrush}"
+                         TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <CheckBox x:Name="RotationRunSwitch" Grid.Column="1"
+                    Style="{StaticResource Switch}" VerticalAlignment="Center"
+                    Checked="OnRotationRunToggled" Unchecked="OnRotationRunToggled"/>
+                            </Grid>
+                            <!-- 轮换间隔 -->
+                            <Grid Style="{StaticResource SettingsRow}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,16,0">
+                                    <TextBlock Text="轮换间隔（秒）" FontSize="14" FontWeight="Medium"
+                                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="自动切换壁纸的时间间隔，最小 5 秒；修改后立即生效"
+                                               FontSize="11.5" Foreground="{StaticResource TextSecondaryBrush}"
+                                               TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <TextBox x:Name="IntervalBox" Grid.Column="1" Style="{StaticResource Input}"
+                                         Width="70" Height="32" VerticalAlignment="Center" MaxLength="6"
+                                         LostFocus="OnIntervalLostFocus" KeyDown="OnIntervalKeyDown"/>
+                            </Grid>
+
+                            <!-- 轮换范围（一级下拉 + 二级分类下拉） -->
+                            <Grid Margin="2,8,0,14">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <StackPanel Grid.Row="0" Margin="0,0,0,10">
+                                    <TextBlock Text="轮换范围" FontSize="14" FontWeight="Medium"
+                                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="选择自动轮换时从哪个范围取壁纸；动态/静态壁纸可再按二级分类筛选"
+                                               FontSize="11.5" Foreground="{StaticResource TextSecondaryBrush}"
+                                               TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                    <ComboBox x:Name="RotationScopeCombo" Width="180" Height="32"
+                                              VerticalContentAlignment="Center"
+                                              SelectionChanged="OnRotationScopeChanged"/>
+                                    <TextBlock x:Name="RotationCategoryLabel" Text="二级分类"
+                                               FontSize="12.5" VerticalAlignment="Center"
+                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                               Margin="18,0,10,0"/>
+                                    <ComboBox x:Name="RotationCategoryCombo" Width="180" Height="32"
+                                              VerticalContentAlignment="Center"
+                                              SelectionChanged="OnRotationCategoryChanged"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 在线来源 -->
+                    <Border Background="White" CornerRadius="12" Padding="20,6" Margin="0,16,0,0"
+                            BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="在线来源" FontSize="13" FontWeight="Bold"
+                                       Foreground="{StaticResource TextSecondaryBrush}" Margin="2,10,0,4"/>
+                            <Grid Margin="2,8,0,14">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid Grid.Row="0" Style="{StaticResource SettingsRow}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="260"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,16,0">
+                                        <TextBlock Text="Pexels API Key" FontSize="14" FontWeight="Medium"
+                                                   Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        <TextBlock Text="在线壁纸完全基于 Pexels（https://www.pexels.com/api/，免费申请），按分类与分页浏览；Key 放在请求头 Authorization 中"
+                                                   FontSize="11.5" Foreground="{StaticResource TextSecondaryBrush}"
+                                                   TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                    <Border Grid.Column="1" Background="#F5F7FB" CornerRadius="8" Padding="8,4"
+                                            VerticalAlignment="Center">
+                                        <TextBox x:Name="PexelsKeyBox" BorderThickness="0" Background="Transparent"
+                                                 VerticalContentAlignment="Center"
+                                                 FontSize="11.5" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    </Border>
+                                    <Button Grid.Column="2" Content="保存" Style="{StaticResource PrimaryBtn}"
+                                            Width="64" Height="30" Click="OnSavePexelsConfig" VerticalAlignment="Center"
+                                            Margin="12,0,0,0"/>
+                                </Grid>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 存储 -->
+                    <Border Background="White" CornerRadius="12" Padding="20,6" Margin="0,16,0,0"
+                            BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="存储" FontSize="13" FontWeight="Bold"
+                                       Foreground="{StaticResource TextSecondaryBrush}" Margin="2,10,0,4"/>
+                            <Grid Margin="2,8,0,14">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid Grid.Row="0" Style="{StaticResource SettingsRow}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,16,0">
+                                        <TextBlock Text="图库存储地址" FontSize="14" FontWeight="Medium"
+                                                   Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        <TextBlock Text="通过「导入图片 / 导入视频」添加的文件会复制保存到这里"
+                                                   FontSize="11.5" Foreground="{StaticResource TextSecondaryBrush}"
+                                                   TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal"
+                                                VerticalAlignment="Center">
+                                        <Button Content="打开文件夹" Style="{StaticResource Btn}"
+                                                Width="88" Height="30" Click="OnOpenLibraryFolder" Margin="0,0,8,0"/>
+                                        <Button Content="修改" Style="{StaticResource PrimaryBtn}"
+                                                Width="64" Height="30" Click="OnChangeLibraryFolder"/>
+                                    </StackPanel>
+                                </Grid>
+                                <Border Grid.Row="1" Background="#F5F7FB" CornerRadius="8"
+                                        Padding="10,7" Margin="0,10,0,0">
+                                    <TextBlock x:Name="LibraryPathText" FontSize="11.5"
+                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                               TextTrimming="CharacterEllipsis"
+                                               ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
+                                </Border>
+                                <TextBlock Grid.Row="2" FontSize="11"
+                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                           TextWrapping="Wrap" Margin="0,8,0,0"
+                                           Text="修改存储地址后，新导入的文件将保存到新位置，已有文件不会被移动。"/>
+                                <!-- 预览缓存管理 -->
+                                <Grid Grid.Row="3" Style="{StaticResource SettingsRow}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,16,0">
+                                        <TextBlock Text="预览缓存" FontSize="14" FontWeight="Medium"
+                                                   Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        <TextBlock Text="仅清理在线壁纸的临时下载文件；本地图库和正在使用的壁纸不会被清理"
+                                                   FontSize="11.5" Foreground="{StaticResource TextSecondaryBrush}"
+                                                   TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Content="清理缓存" Style="{StaticResource Btn}"
+                                            Width="84" Height="30" Click="OnClearCache" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Border Grid.Row="4" Background="#F5F7FB" CornerRadius="8"
+                                        Padding="10,7" Margin="0,10,0,0">
+                                    <TextBlock x:Name="CacheSizeText" FontSize="11.5"
+                                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                                </Border>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 关于 -->
+                    <Border Background="White" CornerRadius="12" Padding="20,6" Margin="0,16,0,0"
+                            BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="关于" FontSize="13" FontWeight="Bold"
+                                       Foreground="{StaticResource TextSecondaryBrush}" Margin="2,10,0,4"/>
+                            <Grid Style="{StaticResource SettingsRow}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,16,0">
+                                    <TextBlock Text="动态壁纸" FontSize="14" FontWeight="Medium"
+                                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="图片壁纸走系统原生接口，视频壁纸使用 WebView2 渲染并嵌入桌面"
+                                               FontSize="11.5" Foreground="{StaticResource TextSecondaryBrush}"
+                                               TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="1" Text="v1.0" FontSize="12"
+                                           VerticalAlignment="Center"
+                                           Foreground="{StaticResource TextSecondaryBrush}"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- 设置操作 Toast -->
+            <Border x:Name="ToastHost" Visibility="Collapsed"
+                    HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,22"
+                    Background="#F21F2937" CornerRadius="10" Padding="16,10">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="ToastIcon" Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="#7EE2A8" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBlock x:Name="ToastText" Text="" FontSize="12.5" Foreground="White"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+    </Border>
+</Window>
