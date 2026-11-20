@@ -99,9 +99,10 @@ public class OnlineWallpaperService
     public IReadOnlyList<WallpaperItem> GetCachedItems(WallpaperType type, string category)
         => GetEntry(PageKey(type, category)).Items;
 
-    /// <summary>全部缓存条目（合并进壁纸库用：收藏展示、轮换池）。</summary>
+    /// <summary>全部缓存条目（合并进壁纸库用：收藏展示、轮换池）。返回快照，
+    /// 避免调用方延迟枚举时与后台/后续的列表修改并发冲突。</summary>
     public IEnumerable<WallpaperItem> GetAllCachedItems()
-        => _pages.Values.SelectMany(e => e.Items);
+        => _pages.Values.SelectMany(e => e.Items).ToList();
 
     /// <summary>已缓存的页数。</summary>
     public int GetCachedPageCount(WallpaperType type, string category)
@@ -145,12 +146,16 @@ public class OnlineWallpaperService
         List<WallpaperItem> items;
         try
         {
-            items = await FetchPexelsPageAsync(type, category, cachedPages + 1).ConfigureAwait(false);
+            // 注意：此处不可用 ConfigureAwait(false) —— await 之后的 entry.Items.AddRange/
+            // TrimPages 等共享列表修改必须回到调用方（UI 线程）执行，否则后台线程修改列表
+            // 会与 UI 线程的 RefreshCards 枚举并发冲突（"Collection was modified" 崩溃）。
+            // 网络等待本身在 FetchPexelsPageAsync 内部已用 ConfigureAwait(false) 释放 UI 线程。
+            items = await FetchPexelsPageAsync(type, category, cachedPages + 1);
         }
         catch (Exception) when (type == WallpaperType.Image)
         {
             // Pexels 不可用（未配置 Key 或请求失败）：图片回退到必应每日精选，保证页面有内容
-            var bing = await FetchBingImagesAsync(entry, category).ConfigureAwait(false);
+            var bing = await FetchBingImagesAsync(entry, category);
             if (bing.Count == 0)
                 throw; // 必应也不可用时才向上抛出提示失败
 
@@ -206,7 +211,10 @@ public class OnlineWallpaperService
         if (string.IsNullOrWhiteSpace(item.SourceUrl))
             return false;
 
-        var local = TryGetCachedPath(item.SourceUrl) ?? await DownloadAsync(item.SourceUrl).ConfigureAwait(false);
+        // 下载在 DownloadAsync 内部用独立长超时 + ConfigureAwait(false) 执行；
+        // 此处恢复调用方上下文（UI 线程）后再改 item.Path / SavePages，
+        // 避免线程池写共享状态与 UI 枚举（RefreshCards / JsonSerializer 序列化）并发冲突
+        var local = TryGetCachedPath(item.SourceUrl) ?? await DownloadAsync(item.SourceUrl);
         if (local == null)
             return false;
 
@@ -230,8 +238,10 @@ public class OnlineWallpaperService
         await _bingLock.WaitAsync().ConfigureAwait(false);
         try
         {
+            // FetchBingArchiveAsync 内部网络等待已用 ConfigureAwait(false) 释放 UI 线程；
+            // 此处恢复调用方上下文（UI 线程），保证后续对共享列表的注入不与 UI 枚举并发
             if (_bingImages == null)
-                _bingImages = await FetchBingArchiveAsync().ConfigureAwait(false);
+                _bingImages = await FetchBingArchiveAsync();
 
             var seen = entry.Items
                 .Select(x => x.SourceUrl)

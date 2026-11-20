@@ -366,7 +366,11 @@ public partial class MainWindow : Window
             _ => Enumerable.Empty<WallpaperItem>()
         };
 
-        foreach (var item in query)
+        // 先快照再枚举：query 可能是对在线缓存列表的活引用，
+        // 若在枚举期间被修改会抛 "Collection was modified"（快照后即隔离）
+        var snapshot = query.ToList();
+
+        foreach (var item in snapshot)
             _items.Add(new WallpaperItemViewModel(item, _library, _config));
 
         EmptyText.Text = page switch
