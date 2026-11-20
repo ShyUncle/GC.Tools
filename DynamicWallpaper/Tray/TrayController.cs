@@ -301,7 +301,10 @@ public class TrayController : IDisposable
     /// <summary>重建菜单内容（每次弹出前重建，保证「暂停/恢复轮换」等状态文案始终最新）。</summary>
     private void RebuildMenu()
     {
-        while (DeleteMenu(_menu, 0, 0x0000 /* MF_BYPOSITION */))
+        // 必须用 MF_BYPOSITION(0x0400) 按位置删除；若误用默认的 MF_BYCOMMAND(0x0000)，
+        // 位置 0 会被当作命令 ID 查找而删除失败，导致菜单项每次右键不断累加
+        const uint mfByPosition = 0x0400;
+        while (DeleteMenu(_menu, 0, mfByPosition))
         {
         }
 
