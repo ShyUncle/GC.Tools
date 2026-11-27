@@ -47,6 +47,10 @@ namespace AIConsoleApp
                 {
                     Endpoint = new Uri("https://localhost:7259/mcp"),
                     TransportMode = HttpTransportMode.StreamableHttp,
+                    AdditionalHeaders = new Dictionary<string, string>
+                    {
+                        { "Authorization", $"Bearer {apiKey}" }
+                    }
                 });
                 await using var httpClient = await McpClient.CreateAsync(httpTransport);
                 httpTools = await httpClient.ListToolsAsync();
